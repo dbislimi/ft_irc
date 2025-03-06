@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 08:03:27 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/04 08:07:23 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/03/06 12:04:28 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 
 class Server {
 	private:
+		int					_serverFd;
 		std::deque<Client*>	_clients;
 		
 	public:
