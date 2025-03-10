@@ -1,32 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Client.hpp                                         :+:      :+:    :+:   */
+/*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/04 08:07:40 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/10 13:44:01 by dbislimi         ###   ########.fr       */
+/*   Created: 2025/03/10 13:29:49 by dbislimi          #+#    #+#             */
+/*   Updated: 2025/03/10 14:56:58 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef	CLIENT_HPP
-# define CLIENT_HPP
+#include "../includes/Server.hpp"
 
-#include <iostream>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <netdb.h>
-
-class Client {
-	private:
-
-	public:
-		Client(){}
-		~Client(){}
-		Client(const Client& instance);
-		Client&	operator=(const Client& instance);
-
-};
-
-#endif
+int main(int ac, char** av){
+	if (ac != 3){
+		std::cout << "Erro: valid input is ./ircserv <port> <password>" << std::endl;
+		return (1);
+	}
+	(void)av;
+	Server	server("irc", atoi(av[1]));
+	try {
+		server.init();
+	}
+	catch (std::exception& e){
+		std::cout << e.what() << std::endl;
+		//FERMER LES FDs
+	}
+}
