@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 08:07:40 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/10 13:44:01 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/03/11 14:18:43 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,15 @@
 
 class Client {
 	private:
+		int _fd;
+		struct in_addr	addr;
 
 	public:
 		Client(){}
-		~Client(){}
-		Client(const Client& instance);
-		Client&	operator=(const Client& instance);
-
+		~Client(){std::cout << "Client " << _fd << "erased." << std::endl;}
+		void setFd(int fd);
+		void setIpAdd(struct in_addr addr);
+		const struct in_addr&	getIp() const;
 };
 
 #endif

@@ -1,5 +1,5 @@
 SRCS_PATH = ./srcs
-SRCS = ${addprefix ./srcs/, main.cpp Server.cpp}
+SRCS = ${addprefix ./srcs/, main.cpp Server.cpp Client.cpp}
 OBJS = $(SRCS:.cpp=.o)
 
 NAME 		= ircserv

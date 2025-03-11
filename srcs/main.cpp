@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 13:29:49 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/10 14:56:58 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/03/11 11:54:00 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ int main(int ac, char** av){
 	(void)av;
 	Server	server("irc", atoi(av[1]));
 	try {
+		signal(SIGINT, Server::signals);
+		signal(SIGQUIT, Server::signals);
 		server.init();
 	}
 	catch (std::exception& e){
