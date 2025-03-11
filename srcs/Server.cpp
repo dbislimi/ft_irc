@@ -6,7 +6,7 @@
 /*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:55:52 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/11 14:22:17 by bsafi            ###   ########.fr       */
+/*   Updated: 2025/03/11 14:39:04 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	Server::newClient(){
 	int clientfd;
 	socklen_t size = sizeof(sa);
 	struct pollfd paul;
-	Client clicli;
+	Client *clicli = new Client();
 	
 	clientfd = accept(this->_serverFd, reinterpret_cast<struct sockaddr*>(&sa), &size);
 	if (clientfd == -1)
@@ -82,9 +82,9 @@ void	Server::newClient(){
 	paul.events = POLLIN;
 	paul.revents = 0;
 
-	clicli.setFd(clientfd);
-	clicli.setIpAdd(sa.sin_addr);
-	_clients.insert(std::pair<int, Client>(clientfd, clicli));
+	clicli->setFd(clientfd);
+	clicli->setIpAdd(sa.sin_addr);
+	_clients.insert(std::pair<int, Client*>(clientfd, clicli));
 	_fds.push_back(paul);
 	std::cout << "Client <" << clientfd << "> Connected" << std::endl;
 	printmap();
@@ -110,6 +110,8 @@ Server::~Server(){
 		std::cout << "closing fd: " << _fds[i].fd << std::endl;
 		close(_fds[i].fd);
 	}
+	for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); ++it)
+		delete it->second;
 	_clients.clear();
 	_fds.clear();
 }
@@ -117,9 +119,9 @@ Server::~Server(){
 
 void	Server::printmap(){
 	std::cout << std::endl << "Map: " << std::endl;
-	for (std::map<int, Client>::iterator it = _clients.begin(); it != _clients.end(); ++it){
+	for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); ++it){
 		char buffer[INET6_ADDRSTRLEN];
-		inet_ntop(AF_INET, &((it->second).getIp()), buffer, sizeof buffer);
+		inet_ntop(AF_INET, &((it->second)->getIp()), buffer, sizeof buffer);
 		std::cout << "[" << it->first << "] = " << buffer << std::endl;
 	}
 	std::cout << std::endl;
@@ -132,8 +134,9 @@ void	Server::eraseClient(int fd){
 			break;
 		}
 	}
-	std::map<int, Client>::iterator it = _clients.find(fd);
+	std::map<int, Client*>::iterator it = _clients.find(fd);
 	if (it == _clients.end())
 		return ;
+	delete it->second;
 	_clients.erase(it);
 }

@@ -6,7 +6,7 @@
 /*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:55:49 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/11 14:22:59 by bsafi            ###   ########.fr       */
+/*   Updated: 2025/03/11 14:33:19 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ class Server {
 		std::string			_name; 
 		int					_port; 
 		int					_serverFd; 
-		std::map<int, Client>	_clients; 
+		std::map<int, Client*>	_clients; 
 		std::vector<struct pollfd>	_fds; 
 		void	_init_socket();
 		
