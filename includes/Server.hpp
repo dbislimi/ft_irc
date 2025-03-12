@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:55:49 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/11 14:33:19 by bsafi            ###   ########.fr       */
+/*   Updated: 2025/03/12 14:57:26 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # include <map>
 # include <vector>
 # include <csignal>
+#include <deque>
 # define BACKLOG 10 // nombre max de demandes de connexion
 
 class Server {
@@ -48,5 +49,6 @@ class Server {
 		void	eraseClient(int fd);
 };
 	
+std::deque<std::string>	parseCmd(char* buff);
 	
 #endif
