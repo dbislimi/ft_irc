@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:55:49 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/12 14:57:26 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/03/12 16:26:21 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,16 @@ class Server {
 		void	newCmd(int fd);
 		void	printmap();
 		void	eraseClient(int fd);
+		void	handleCmd(std::deque<std::string> cmd);
+
+		void	NICK();
+		void	USER();
+		void	JOIN();
+		void	KICK();
+		void	INVITE();
+		void	TOPIC();
+		void	MODE();
+		
 };
 	
 std::deque<std::string>	parseCmd(char* buff);

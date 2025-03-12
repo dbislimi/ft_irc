@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:55:52 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/12 14:57:44 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/03/12 16:40:56 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,6 @@ void	Server::newClient(){
 		throw std::runtime_error("Error: function accept failed");
 	if (fcntl(clientfd, F_SETFL, O_NONBLOCK))
 		throw std::runtime_error("Error: failed to set option O_NONBLOCK on socket.");
-	
 	paul.fd = clientfd;
 	paul.events = POLLIN;
 	paul.revents = 0;
@@ -89,6 +88,7 @@ void	Server::newClient(){
 	std::cout << "Client <" << clientfd << "> Connected" << std::endl;
 	printmap();
 }
+
 
 void	Server::newCmd(int fd){
 	char	buff[1024];
@@ -103,6 +103,7 @@ void	Server::newCmd(int fd){
 	}
 	buff[bytes] = 0;
 	std::cout << "Client <" << fd << "> Data: "<< buff << std::endl;
+	handleCmd(parseCmd(buff));
 }
 
 Server::~Server(){
@@ -115,7 +116,6 @@ Server::~Server(){
 	_clients.clear();
 	_fds.clear();
 }
-
 
 void	Server::printmap(){
 	std::cout << std::endl << "Map: " << std::endl;
@@ -139,4 +139,29 @@ void	Server::eraseClient(int fd){
 		return ;
 	delete it->second;
 	_clients.erase(it);
+}
+
+void	Server::handleCmd(std::deque<std::string> cmd){
+	std::string cmds[7] = {"NICK", "USER", "JOIN", "KICK", "INVITE", "TOPIC", "MODE"};
+	void	(Server::*funct[7])() = {&NICK, &USER, &JOIN, &KICK, &INVITE, &TOPIC, &MODE};
+	
+	for (int i = 0; i < 7; ++i){
+		if (cmd[0] == cmds[i])
+			(this->*funct[i])();
+	}
+}
+
+void	Server::NICK(){
+}
+void	Server::USER(){
+}
+void	Server::JOIN(){
+}
+void	Server::KICK(){
+}
+void	Server::INVITE(){
+}
+void	Server::TOPIC(){
+}
+void	Server::MODE(){
 }
