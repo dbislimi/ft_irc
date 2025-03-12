@@ -6,7 +6,7 @@
 /*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:55:49 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/11 14:33:19 by bsafi            ###   ########.fr       */
+/*   Updated: 2025/03/12 14:01:30 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ class Server {
 		void	newCmd(int fd);
 		void	printmap();
 		void	eraseClient(int fd);
+		void	intro(int clientfd);
 };
 	
 	

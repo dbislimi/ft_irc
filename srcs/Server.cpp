@@ -6,7 +6,7 @@
 /*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:55:52 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/11 14:39:04 by bsafi            ###   ########.fr       */
+/*   Updated: 2025/03/12 14:54:59 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ void	Server::newClient(){
 	clicli->setIpAdd(sa.sin_addr);
 	_clients.insert(std::pair<int, Client*>(clientfd, clicli));
 	_fds.push_back(paul);
+	intro(clientfd);
 	std::cout << "Client <" << clientfd << "> Connected" << std::endl;
 	printmap();
 }
@@ -139,4 +140,21 @@ void	Server::eraseClient(int fd){
 		return ;
 	delete it->second;
 	_clients.erase(it);
+}
+
+void	Server::intro(int clientfd){
+	size_t bytes;
+	
+	std::string test = "welcome to the TEST Internet Relay Chat Network\r\n";
+	bytes = send(clientfd, test.c_str(), test.size(), 0);
+	if (bytes == -1)
+		throw std::runtime_error("Error: function send failed");
+	test = "your host is " + _name + " running version 1.0\r\n";
+	bytes = send(clientfd, test.c_str(), test.size(), 0);
+	if (bytes == -1)
+		throw std::runtime_error("Error: function send failed");
+	test = "this server was created the 11/03/2025\r\n";
+	bytes = send(clientfd, test.c_str(), test.size(), 0);
+	if (bytes == -1)
+		throw std::runtime_error("Error: function send failed");
 }

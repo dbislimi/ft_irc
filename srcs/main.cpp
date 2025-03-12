@@ -6,7 +6,7 @@
 /*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 13:29:49 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/11 11:54:00 by bsafi            ###   ########.fr       */
+/*   Updated: 2025/03/12 14:39:27 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int main(int ac, char** av){
 		return (1);
 	}
 	(void)av;
-	Server	server("irc", atoi(av[1]));
+	Server	server("discord", atoi(av[1]));
 	try {
 		signal(SIGINT, Server::signals);
 		signal(SIGQUIT, Server::signals);
