@@ -6,7 +6,7 @@
 /*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:55:52 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/12 14:54:59 by bsafi            ###   ########.fr       */
+/*   Updated: 2025/03/13 16:29:35 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ void	Server::init(){
 					newClient();
 				else
 					newCmd(_fds[i].fd);
+					
 			}
 		}
 	}
@@ -71,18 +72,17 @@ void	Server::newClient(){
 	socklen_t size = sizeof(sa);
 	struct pollfd paul;
 	Client *clicli = new Client();
-	
 	clientfd = accept(this->_serverFd, reinterpret_cast<struct sockaddr*>(&sa), &size);
 	if (clientfd == -1)
 		throw std::runtime_error("Error: function accept failed");
 	if (fcntl(clientfd, F_SETFL, O_NONBLOCK))
 		throw std::runtime_error("Error: failed to set option O_NONBLOCK on socket.");
-	
 	paul.fd = clientfd;
 	paul.events = POLLIN;
 	paul.revents = 0;
-
 	clicli->setFd(clientfd);
+	clicli->setSign(false);
+	std::cout << "IP = " << clicli->getFd() << std::endl;
 	clicli->setIpAdd(sa.sin_addr);
 	_clients.insert(std::pair<int, Client*>(clientfd, clicli));
 	_fds.push_back(paul);
@@ -91,9 +91,9 @@ void	Server::newClient(){
 	printmap();
 }
 
+
 void	Server::newCmd(int fd){
 	char	buff[1024];
-	
 	memset(buff, 0, sizeof(buff));
 	size_t	bytes = recv(fd, buff, sizeof(buff) - 1, 0);
 	if (bytes <= 0){
@@ -103,7 +103,35 @@ void	Server::newCmd(int fd){
 		return ;
 	}
 	buff[bytes] = 0;
+	_cmd = parseCmd(buff);
+	for(std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); ++it){
+		if (it->second->getSign() == false){
+			checkPassword(fd);
+			if (it->second->getSign() == true)
+				intro(fd);
+		}
+		else
+			handleCmd(_cmd, fd);
+	}
 	std::cout << "Client <" << fd << "> Data: "<< buff << std::endl;
+}
+
+void Server::checkPassword(int fd){
+	trim(_passWord);
+	std::string pass;
+	if (_cmd[0] == _passWord){
+		pass = "valid passeword\r\n";
+		send(fd, pass.c_str(), pass.length(), 0);
+		for(std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); ++it){
+			if (it->first == fd){
+				it->second->setSign(true);
+			}
+		}
+	}
+	else{
+		pass = "wrong password, retry \r\n";
+    	send(fd, pass.c_str(), pass.length(), 0);
+	}
 }
 
 Server::~Server(){
@@ -116,7 +144,6 @@ Server::~Server(){
 	_clients.clear();
 	_fds.clear();
 }
-
 
 void	Server::printmap(){
 	std::cout << std::endl << "Map: " << std::endl;
@@ -142,8 +169,40 @@ void	Server::eraseClient(int fd){
 	_clients.erase(it);
 }
 
+void	Server::handleCmd(std::deque<std::string> cmd, int fd){
+	std::map<int, Client*>::iterator it = _clients.find(fd);
+	if (it->second->getBoolName() == false){
+		std::string ask = "entry nickname:\r\n";
+		send(fd, ask.c_str(), ask.length(), 0);
+		it->second->setNickName(_cmd[0]);
+		it->second->setBoolName(true);
+	}
+	std::string cmds[7] = {"NICK", "USER", "JOIN", "KICK", "INVITE", "TOPIC", "MODE"};
+	void	(Server::*funct[7])() = {&Server::NICK, &Server::USER, &Server::JOIN, &Server::KICK, &Server::INVITE, &Server::TOPIC, &Server::MODE};
+	
+	for (int i = 0; i < 7; ++i){
+		if (cmd[0] == cmds[i])
+			(this->*funct[i])();
+	}
+}
+
+void	Server::NICK(){
+}
+void	Server::USER(){
+}
+void	Server::JOIN(){
+}
+void	Server::KICK(){
+}
+void	Server::INVITE(){
+}
+void	Server::TOPIC(){
+}
+void	Server::MODE(){
+}
+
 void	Server::intro(int clientfd){
-	size_t bytes;
+	ssize_t bytes;
 	
 	std::string test = "welcome to the TEST Internet Relay Chat Network\r\n";
 	bytes = send(clientfd, test.c_str(), test.size(), 0);
@@ -157,4 +216,11 @@ void	Server::intro(int clientfd){
 	bytes = send(clientfd, test.c_str(), test.size(), 0);
 	if (bytes == -1)
 		throw std::runtime_error("Error: function send failed");
+	std::string ask = "entry username:\r\n";
+	send(clientfd, ask.c_str(), ask.length(), 0);
+	std::map<int, Client*>::iterator it = _clients.find(clientfd);
+	if (it == _clients.end()){
+		throw std::runtime_error("Error : not find client");
+	}
+	it->second->setUserName(_cmd[0]);
 }
