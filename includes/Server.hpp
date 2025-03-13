@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:55:49 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/12 16:26:21 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/03/13 15:28:10 by dravaono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,11 @@ class Server {
 		std::map<int, Client*>	_clients; 
 		std::vector<struct pollfd>	_fds; 
 		void	_init_socket();
+		std::deque<std::string> _cmd;
+		std::string _passWord;
 		
 	public: 
-		Server(const std::string& name, int port) : _name(name), _port(port){} 
+		Server(const std::string& name, int port, std::string password) : _name(name), _port(port), _passWord(password){} 
 		~Server();
 		static void signals(int signum);
 		void	init();
@@ -47,7 +49,9 @@ class Server {
 		void	newCmd(int fd);
 		void	printmap();
 		void	eraseClient(int fd);
-		void	handleCmd(std::deque<std::string> cmd);
+		void 	checkPassword(int fd);
+		void	handleCmd(std::deque<std::string> cmd, int fd);
+		void	intro(int clientfd);
 
 		void	NICK();
 		void	USER();
@@ -60,5 +64,6 @@ class Server {
 };
 	
 std::deque<std::string>	parseCmd(char* buff);
+void trim(std::string &str);
 	
 #endif
