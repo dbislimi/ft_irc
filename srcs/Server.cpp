@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:55:52 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/13 17:56:31 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/03/13 18:34:07 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	Server::newClient(){
 	struct sockaddr_in sa;
 	int clientfd;
 	socklen_t size = sizeof(sa);
-	struct pollfd paul;
+	struct pollfd poll;
 	Client *clicli = new Client();
 
 	clientfd = accept(this->_serverFd, reinterpret_cast<struct sockaddr*>(&sa), &size);
@@ -78,15 +78,15 @@ void	Server::newClient(){
 		throw std::runtime_error("Error: function accept failed");
 	if (fcntl(clientfd, F_SETFL, O_NONBLOCK))
 		throw std::runtime_error("Error: failed to set option O_NONBLOCK on socket.");
-	paul.fd = clientfd;
-	paul.events = POLLIN;
-	paul.revents = 0;
+	poll.fd = clientfd;
+	poll.events = POLLIN;
+	poll.revents = 0;
 	clicli->setFd(clientfd);
 	clicli->setSign(false);
 	std::cout << "FD = " << clicli->getFd() << std::endl;
 	clicli->setIpAdd(sa.sin_addr);
 	_clients.insert(std::pair<int, Client*>(clientfd, clicli));
-	_fds.push_back(paul);
+	_fds.push_back(poll);
 	std::cout << "Client <" << clientfd << "> Connected" << std::endl;
 	printmap();
 }
@@ -104,34 +104,44 @@ void	Server::newCmd(int fd){
 	}
 	buff[bytes] = 0;
 	_cmd = parseCmd(buff);
-	for(std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); ++it){
-		if (it->second->getSign() == false){
-			checkPassword(fd);
-			if (it->second->getSign() == true)
-				intro(fd);
-		}
-		else
-			handleCmd(_cmd, fd);
+	if (_clients[fd]->isConnected() == false){
+		get_info(fd);
+		return ;
 	}
+	handleCmd(_cmd, fd);
 	std::cout << "Client <" << fd << "> Data: "<< buff << std::endl;
 }
 
-void Server::checkPassword(int fd){
+void	Server::get_info(int fd){
+	if (_clients[fd]->getSign() == false){
+		checkPassword(fd);
+		return ;
+	}
+	if (_clients[fd]->getUserName() == ""){
+		_clients[fd]->setUserName(_cmd[0]);
+		return ;
+	}
+	else if (_clients[fd]->getNickName() == ""){
+		_clients[fd]->setNickName(_cmd[0]);
+		_clients[fd]->connect();
+		return ;
+	}
+}
+bool Server::checkPassword(int fd){
+	bool	flag = 0;
 	trim(_passWord);
 	std::string pass;
 	if (_cmd[0] == _passWord){
 		pass = "valid passeword\r\n";
-		send(fd, pass.c_str(), pass.length(), 0);
-		for(std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); ++it){
-			if (it->first == fd){
-				it->second->setSign(true);
-			}
-		}
+		_clients[fd]->setSign(true);
+		flag = 1;
 	}
-	else{
+	else
 		pass = "wrong password, retry \r\n";
-    	send(fd, pass.c_str(), pass.length(), 0);
-	}
+	send(fd, pass.c_str(), pass.length(), 0);
+	if (flag)
+		intro(fd);
+	return (flag);
 }
 
 Server::~Server(){
@@ -187,7 +197,7 @@ void	Server::handleCmd(std::deque<std::string> cmd, int fd){
 }
 
 void	Server::JOIN(int fd, std::string value){
-	std::string welcome = _clients[fd]->getNickName() +" [~" + _clients[fd]->getNickName() + "@" + _clients[fd]->getIp() + "] has joined #" +value;
+	std::string welcome = _clients[fd]->getNickName() +" [~" + _clients[fd]->getNickName() + "@" + _clients[fd]->getIp() + "] has joined #" + value;
 	std::map<std::string, Channel*>::iterator it = _channels.find(value);
 	
 	if (it == _channels.end())

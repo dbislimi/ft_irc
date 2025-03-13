@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 08:07:40 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/13 17:40:45 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/03/13 18:33:09 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <map>
 class Client {
 	private:
+		bool	_isConnected;
 		bool _isSigned;
 		bool _allName;
 		int _fd;
@@ -33,7 +34,9 @@ class Client {
 		bool getBoolName();
 		void setSign(bool isSigned);
 		void setBoolName(bool allName);
-		Client(){}
+		bool	isConnected() const;
+		void	connect();
+		Client(): _isSigned(false){}
 		~Client(){std::cout << "Client " << _fd << "erased." << std::endl;}
 		void setFd(int fd);
 		int	getFd() const;

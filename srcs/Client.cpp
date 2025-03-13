@@ -35,6 +35,14 @@ bool Client::getBoolName(){
     return (_allName);
 }
 
+bool	Client::isConnected() const{
+    return (this->_isConnected);
+}
+
+void    Client::connect(){
+    this->_isConnected = true;
+}
+
 void Client::setNickName(std::string nickName){
     this->_nickName = nickName;
 }

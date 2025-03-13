@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:55:49 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/13 17:08:55 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/03/13 18:30:59 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,10 @@ class Server {
 		void	newCmd(int fd);
 		void	printmap();
 		void	eraseClient(int fd);
-		void 	checkPassword(int fd);
+		bool 	checkPassword(int fd);
 		void	handleCmd(std::deque<std::string> cmd, int fd);
 		void	intro(int clientfd);
-
+		void	get_info(int fd);
 
 		void	JOIN(int fd, std::string value);
 		void	KICK(int fd, std::string value);
