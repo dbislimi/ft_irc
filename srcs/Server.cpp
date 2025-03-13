@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:55:52 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/12 14:57:44 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/03/13 11:23:34 by dravaono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,8 @@ void	Server::newClient(){
 
 void	Server::newCmd(int fd){
 	char	buff[1024];
-	
+	// std::deque<std::string> cmds;
+
 	memset(buff, 0, sizeof(buff));
 	size_t	bytes = recv(fd, buff, sizeof(buff) - 1, 0);
 	if (bytes <= 0){
