@@ -5,10 +5,14 @@ void    Client::setFd(int fd){
 }
 
 void Client::setIpAdd(struct in_addr addr){
-    this->addr = addr;
+	char buffer[INET6_ADDRSTRLEN];
+	inet_ntop(AF_INET, &addr.s_addr, buffer, sizeof buffer);
+    this->_ip = buffer;
+    std::cout <<"ip: " << this->_ip << std::endl;
 }
-const struct in_addr&	Client::getIp() const{
-    return (this->addr);
+
+const std::string&	Client::getIp() const{
+    return (this->_ip);
 }
 
 int	Client::getFd() const{

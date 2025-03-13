@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:55:49 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/13 15:28:10 by dravaono         ###   ########.fr       */
+/*   Updated: 2025/03/13 17:08:55 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef	SERVER_HPP
 # define SERVER_HPP
 
-# include "Client.hpp"
+# include "Channel.hpp"
 # include <algorithm>
 # include <exception>
 # include <cstring>
@@ -22,8 +22,8 @@
 # include <cstdio>
 # include <fcntl.h>
 # include <poll.h>
-# include <map>
-# include <vector>
+
+
 # include <csignal>
 #include <deque>
 # define BACKLOG 10 // nombre max de demandes de connexion
@@ -34,11 +34,12 @@ class Server {
 		std::string			_name; 
 		int					_port; 
 		int					_serverFd; 
+		std::map<std::string, Channel*>	_channels;
 		std::map<int, Client*>	_clients; 
 		std::vector<struct pollfd>	_fds; 
-		void	_init_socket();
 		std::deque<std::string> _cmd;
 		std::string _passWord;
+		void	_init_socket();
 		
 	public: 
 		Server(const std::string& name, int port, std::string password) : _name(name), _port(port), _passWord(password){} 
@@ -53,13 +54,12 @@ class Server {
 		void	handleCmd(std::deque<std::string> cmd, int fd);
 		void	intro(int clientfd);
 
-		void	NICK();
-		void	USER();
-		void	JOIN();
-		void	KICK();
-		void	INVITE();
-		void	TOPIC();
-		void	MODE();
+
+		void	JOIN(int fd, std::string value);
+		void	KICK(int fd, std::string value);
+		void	INVITE(int fd, std::string value);
+		void	TOPIC(int fd, std::string value);
+		void	MODE(int fd, std::string value);
 		
 };
 	

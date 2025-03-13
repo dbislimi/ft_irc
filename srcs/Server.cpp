@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:55:52 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/13 15:39:58 by dravaono         ###   ########.fr       */
+/*   Updated: 2025/03/13 17:56:31 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ void	Server::newClient(){
 	socklen_t size = sizeof(sa);
 	struct pollfd paul;
 	Client *clicli = new Client();
+
 	clientfd = accept(this->_serverFd, reinterpret_cast<struct sockaddr*>(&sa), &size);
 	if (clientfd == -1)
 		throw std::runtime_error("Error: function accept failed");
@@ -82,7 +83,7 @@ void	Server::newClient(){
 	paul.revents = 0;
 	clicli->setFd(clientfd);
 	clicli->setSign(false);
-	std::cout << "IP = " << clicli->getFd() << std::endl;
+	std::cout << "FD = " << clicli->getFd() << std::endl;
 	clicli->setIpAdd(sa.sin_addr);
 	_clients.insert(std::pair<int, Client*>(clientfd, clicli));
 	_fds.push_back(paul);
@@ -176,28 +177,40 @@ void	Server::handleCmd(std::deque<std::string> cmd, int fd){
 		it->second->setNickName(_cmd[0]);
 		it->second->setBoolName(true);
 	}
-	std::string cmds[7] = {"NICK", "USER", "JOIN", "KICK", "INVITE", "TOPIC", "MODE"};
-	void	(Server::*funct[7])() = {&Server::NICK, &Server::USER, &Server::JOIN, &Server::KICK, &Server::INVITE, &Server::TOPIC, &Server::MODE};
+	std::string cmds[5] = {"JOIN", "KICK", "INVITE", "TOPIC", "MODE"};
+	void	(Server::*funct[5])(int, std::string) = {&Server::JOIN, &Server::KICK, &Server::INVITE, &Server::TOPIC, &Server::MODE};
 	
-	for (int i = 0; i < 7; ++i){
+	for (int i = 0; i < 5; ++i){
 		if (cmd[0] == cmds[i])
-			(this->*funct[i])();
+			(this->*funct[i])(fd, cmd[1]);
 	}
 }
 
-void	Server::NICK(){
+void	Server::JOIN(int fd, std::string value){
+	std::string welcome = _clients[fd]->getNickName() +" [~" + _clients[fd]->getNickName() + "@" + _clients[fd]->getIp() + "] has joined #" +value;
+	std::map<std::string, Channel*>::iterator it = _channels.find(value);
+	
+	if (it == _channels.end())
+		_channels[value] = new Channel(value);
+	_channels[value]->add(fd);
+	_channels[value]->sendChannel(welcome);
 }
-void	Server::USER(){
+
+void	Server::KICK(int fd, std::string value){
+	(void)value;
+	(void)fd;
 }
-void	Server::JOIN(){
+void	Server::INVITE(int fd, std::string value){
+	(void)value;
+	(void)fd;
 }
-void	Server::KICK(){
+void	Server::TOPIC(int fd, std::string value){
+	(void)value;
+	(void)fd;
 }
-void	Server::INVITE(){
-}
-void	Server::TOPIC(){
-}
-void	Server::MODE(){
+void	Server::MODE(int fd, std::string value){
+	(void)value;
+	(void)fd;
 }
 
 void	Server::intro(int clientfd){
