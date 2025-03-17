@@ -1,10 +1,10 @@
 SRCS_PATH = ./srcs
-SRCS = ${addprefix ./srcs/, main.cpp Server.cpp Client.cpp utils.cpp}
+SRCS = ${addprefix ./srcs/, main.cpp Server.cpp Client.cpp utils.cpp Channel.cpp}
 OBJS = $(SRCS:.cpp=.o)
 
 NAME 		= ircserv
 CC 			= c++
-CPPFLAGS 	= -Wall -Wextra -Werror -std=c++11 -g3
+CPPFLAGS 	= -Wall -Wextra -Werror -std=c++98 -g3
 RM 			= rm -rf
 
 all : $(NAME)
