@@ -5,10 +5,11 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/10 14:55:49 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/13 18:30:59 by dbislimi         ###   ########.fr       */
+/*   Created: Invalid date        by                   #+#    #+#             */
+/*   Updated: 2025/03/17 17:10:54 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #ifndef	SERVER_HPP
 # define SERVER_HPP
@@ -33,7 +34,7 @@ class Server {
 		static bool signal;
 		std::string			_name; 
 		int					_port; 
-		int					_serverFd; 
+		int					_serverFd;
 		std::map<std::string, Channel*>	_channels;
 		std::map<int, Client*>	_clients; 
 		std::vector<struct pollfd>	_fds; 
@@ -50,20 +51,22 @@ class Server {
 		void	newCmd(int fd);
 		void	printmap();
 		void	eraseClient(int fd);
-		bool 	checkPassword(int fd);
-		void	handleCmd(std::deque<std::string> cmd, int fd);
+		void 	checkPassword(int fd);
+		void	handleCmd(std::string buff, std::deque<std::string> cmd, int fd);
 		void	intro(int clientfd);
-		void	get_info(int fd);
+		void	get_info(int fd, std::deque<std::string> cmd);
 
 		void	JOIN(int fd, std::string value);
+		void	USER(int fd, std::string value);
+		void	NICK(int fd, std::string value);
 		void	KICK(int fd, std::string value);
 		void	INVITE(int fd, std::string value);
 		void	TOPIC(int fd, std::string value);
-		void	MODE(int fd, std::string value);
-		
+		void	MODE(int fd, std::string value);		
 };
 	
-std::deque<std::string>	parseCmd(char* buff);
-void trim(std::string &str);
+std::deque<std::string>	parseCmd(std::string& buff);
+std::deque<std::string>	parseBuff(char* buff);
+std::string trim(std::string str);
 	
 #endif

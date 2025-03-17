@@ -5,10 +5,11 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/04 08:07:40 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/13 18:33:09 by dbislimi         ###   ########.fr       */
+/*   Created: Invalid date        by                   #+#    #+#             */
+/*   Updated: 2025/03/17 17:00:30 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #ifndef	CLIENT_HPP
 # define CLIENT_HPP
@@ -19,6 +20,7 @@
 #include <netdb.h>
 # include <vector>
 # include <map>
+
 class Client {
 	private:
 		bool	_isConnected;
@@ -26,8 +28,10 @@ class Client {
 		bool _allName;
 		int _fd;
 		std::string		_ip;
+		struct in_addr	addr;
 		std::string _userName;
 		std::string _nickName;
+		std::string	_channel;
 
 	public:
 		bool getSign();
@@ -36,7 +40,7 @@ class Client {
 		void setBoolName(bool allName);
 		bool	isConnected() const;
 		void	connect();
-		Client(): _isSigned(false){}
+		Client(){}
 		~Client(){std::cout << "Client " << _fd << "erased." << std::endl;}
 		void setFd(int fd);
 		int	getFd() const;
@@ -47,6 +51,8 @@ class Client {
 		void setIpAdd(struct in_addr addr);
 		const std::string&	getIp() const;
 		void welcomeMsg();
+		void	setChannel(std::string& name);
+		std::string	getChannel() const;
 };
 
 #endif
