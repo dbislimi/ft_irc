@@ -6,7 +6,7 @@
 /*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 16:40:16 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/17 12:01:08 by bsafi            ###   ########.fr       */
+/*   Updated: 2025/03/17 14:32:46 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ class Channel {
 		Channel(const std::string& name): _name(name){}
 
 		void	add(int fd);
-		void	sendChannel(std::string msg);
+		void	sendChannel(int fd, std::string msg);
 };
 
 #endif

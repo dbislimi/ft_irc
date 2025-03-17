@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 14:22:35 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/13 14:49:17 by dravaono         ###   ########.fr       */
+/*   Updated: 2025/03/17 15:29:45 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,9 @@ std::deque<std::string>	parseCmd(char* buff){
 			break ;
 		last = str.find_first_of(" \r\t\n", first);
 		deque.push_back(str.substr(first, (last) - first));
+	}
+	for (size_t i = 0; i < deque.size(); ++i){
+		std::cout << deque[i] << std::endl;
 	}
 	return (deque);
 }

@@ -27,14 +27,6 @@ bool Client::getSign(){
     return (_isSigned);
 }
 
-void Client::setBoolName(bool allName){
-    this->_allName = allName;
-}
-
-bool Client::getBoolName(){
-    return (_allName);
-}
-
 bool	Client::isConnected() const{
     return (this->_isConnected);
 }
@@ -65,4 +57,11 @@ void Client::setBoolName(bool allName){
 
 bool Client::getBoolName(){
     return (_allName);
+}
+
+void	Client::setChannel(std::string& name){
+    this->_channel = name;
+}
+std::string	Client::getChannel() const{
+    return (_channel);
 }
