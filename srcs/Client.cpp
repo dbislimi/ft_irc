@@ -1,4 +1,5 @@
 #include "../includes/Client.hpp"
+#include "../includes/Server.hpp"
 
 void    Client::setFd(int fd){
     this->_fd = fd;
@@ -29,6 +30,7 @@ bool Client::getSign(){
 
 
 void    Client::connect(){
+    _server->intro(_fd);
     this->_isConnected = true;
 }
 

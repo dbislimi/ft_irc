@@ -6,12 +6,14 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/03/17 17:14:17 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/03/18 17:15:09 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "../includes/Server.hpp"
+#include "../includes/Client.hpp"
+#include "../includes/Channel.hpp"
 
 bool Server::signal = false;
 
@@ -75,7 +77,7 @@ void Server::newClient(){
 	int clientfd;
 	socklen_t size = sizeof(sa);
 	struct pollfd poll;
-	Client *clicli = new Client();
+	Client *clicli = new Client(this);
 
 	clientfd = accept(this->_serverFd, reinterpret_cast<struct sockaddr *>(&sa), &size);
 	if (clientfd == -1)
@@ -93,7 +95,8 @@ void Server::newClient(){
 	_clients.insert(std::pair<int, Client *>(clientfd, clicli));
 	_fds.push_back(poll);
 	std::cout << "Client <" << clientfd << "> Connected" << std::endl;
-	intro(clientfd);
+	std::string ask = "Please log in with /password [..] .\r\n";
+	send(clientfd, ask.c_str(), ask.length(), 0);
 	printmap();
 }
 
@@ -103,58 +106,17 @@ void Server::newCmd(int fd)
 	memset(buff, 0, sizeof(buff));
 	size_t bytes = recv(fd, buff, sizeof(buff) - 1, 0);
 	if (bytes <= 0){
-		std::cout << "Client " << fd << " disconnected." << std::endl;
+		std::cout << "Client <" << fd << "> disconnected." << std::endl;
 		eraseClient(fd);
-		close(fd);
 		return;
 	}
 	buff[bytes] = 0;
-	_cmd = parseBuff(buff);
-	// if (_clients[fd]->isConnected() == false){
-	// 	get_info(fd, _cmd);
-	// 	return ;
-	// }
+	_cmd = split(buff, "\r\n");
 	for (std::deque<std::string>::iterator it = _cmd.begin(); it != _cmd.end(); ++it){
 		std::cout << "Data: [" << *it << "]" << std::endl;
-		handleCmd(buff, parseCmd(*it), fd);
-	}
-	// std::cout << "Client <" << fd << "> Data: " << buff << std::endl;
-}
-
-void	Server::get_info(int fd, std::deque<std::string> cmd){
-	for (std::deque<std::string>::iterator it = cmd.begin(); it != cmd.end(); ++it){
-		if (*it == "NICK"){
-			++it;
-			_clients[fd]->setNickName(*it);
-		}
-		if (*it == "USER"){
-			++it;
-			_clients[fd]->setUserName(*it);
-			_clients[fd]->connect();
-		}
-	}
-}
-
-void Server::checkPassword(int fd)
-{
-	trim(_passWord);
-	std::string pass;
-	if (_cmd[0] == _passWord)
-	{
-		pass = "valid passeword\r\n";
-		send(fd, pass.c_str(), pass.length(), 0);
-		for (std::map<int, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
-		{
-			if (it->first == fd)
-			{
-				it->second->setSign(true);
-			}
-		}
-	}
-	else
-	{
-		pass = "wrong password, retry \r\n";
-		send(fd, pass.c_str(), pass.length(), 0);
+		if (_clients[fd]->getNickName().empty() && !strncmp((*it).c_str(), "CAP", 3))
+			continue ;
+		handleCmd(buff, split((*it).c_str(), " \t\r\n"), fd);
 	}
 }
 
@@ -198,62 +160,46 @@ void Server::eraseClient(int fd)
 		return;
 	delete it->second;
 	_clients.erase(it);
+	close(fd);
 }
 
 void Server::handleCmd(std::string buff, std::deque<std::string> cmd, int fd)
 {
-	std::string cmds[7] = {"JOIN", "NICK", "USER", "KICK", "INVITE", "TOPIC", "MODE"};
-	void (Server::*funct[7])(int, std::string) = {&Server::JOIN, &Server::USER, &Server::NICK, &Server::KICK, &Server::INVITE, &Server::TOPIC, &Server::MODE};
-	std::string	unvalid = "Unvalid command, please use JOIN\r\n";
+	std::string	suggest = (_clients[fd]->isConnected()) ? "/join ." : "/password [..] .";
+	std::string	unvalid = cmd[0] + " :Unknown command, please use " + suggest + "\r\n";
+	std::map<std::string, void (Server::*)(int, std::string)>::iterator it = _cmds.find(cmd[0]);
 	
-	for (int i = 0; i < 7; ++i){
-		if (cmd[0] == cmds[i]){
-			(this->*funct[i])(fd, cmd[1]);
-			return ;
-		}
-	}
-	if (_clients[fd]->getBoolName() == true)
+	if (it != _cmds.end())
+		(this->*(it->second))(fd, cmd[1]);
+	else if (_clients[fd]->getBoolName() == true)
 		_channels[_clients[fd]->getChannel()]->sendChannel(fd, buff);
 	else
 		send(fd, unvalid.c_str(), unvalid.length(), 0);
 }
 
-void	Server::JOIN(int fd, std::string value){
-	std::string welcome = _clients[fd]->getNickName() +" [~" + _clients[fd]->getNickName() + "@" +  "] has joined #" + value + "\r\n";
-	std::map<std::string, Channel*>::iterator it = _channels.find(value);
-	
-	if (it == _channels.end())
-		_channels[value] = new Channel(value);
-	_clients[fd]->setChannel(value);
-	_channels[value]->add(fd);
-	_channels[value]->sendChannel(-1, welcome);
-	_clients[fd]->setBoolName(true);
-}
 void	Server::USER(int fd, std::string value){
-	(void)value;
 	(void)fd;
 	std::cout << "set USER to: " << value << std::endl;
 }
 void	Server::NICK(int fd, std::string value){
-	(void)value;
 	(void)fd;
 	std::cout << "set NICK to: " << value << std::endl;
 }
-void	Server::KICK(int fd, std::string value){
+
+void	Server::PASS(int fd, std::string value){
 	(void)value;
 	(void)fd;
+	if (value == this->_passWord){
+		_clients[fd]->connect();
+		return ;
+	}
+	std::string	bad = "Wrond password ... Please enter a correct password with /password [..].\r\n";
+	send(fd, bad.c_str(), bad.length(), 0);
 }
-void	Server::INVITE(int fd, std::string value){
+
+void	Server::QUIT(int fd, std::string value){
 	(void)value;
-	(void)fd;
-}
-void	Server::TOPIC(int fd, std::string value){
-	(void)value;
-	(void)fd;
-}
-void	Server::MODE(int fd, std::string value){
-	(void)value;
-	(void)fd;
+	eraseClient(fd);
 }
 
 void Server::intro(int clientfd)
@@ -272,8 +218,6 @@ void Server::intro(int clientfd)
 	bytes = send(clientfd, test.c_str(), test.size(), 0);
 	if (bytes == -1)
 		throw std::runtime_error("Error: function send failed");
-	std::string ask = "Please enter a password with /password [password].\r\n";
-	send(clientfd, ask.c_str(), ask.length(), 0);
 	std::map<int, Client *>::iterator it = _clients.find(clientfd);
 	if (it == _clients.end())
 	{

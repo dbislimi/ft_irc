@@ -6,20 +6,17 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/03/17 17:00:30 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/03/18 15:34:52 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#pragma once
 
-#ifndef	CLIENT_HPP
-# define CLIENT_HPP
 
-#include <iostream>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <netdb.h>
-# include <vector>
-# include <map>
+# include <iostream>
+# include <arpa/inet.h>
+
+class Server;
 
 class Client {
 	private:
@@ -32,6 +29,7 @@ class Client {
 		std::string _userName;
 		std::string _nickName;
 		std::string	_channel;
+		Server*		_server;
 
 	public:
 		bool getSign();
@@ -40,8 +38,8 @@ class Client {
 		void setBoolName(bool allName);
 		bool	isConnected() const;
 		void	connect();
-		Client(){}
-		~Client(){std::cout << "Client " << _fd << "erased." << std::endl;}
+		Client(Server* server): _server(server){}
+		~Client(){std::cout << "Client <" << _fd << "> disconnected." << std::endl;}
 		void setFd(int fd);
 		int	getFd() const;
 		std::string	getUserName() const;
@@ -54,5 +52,3 @@ class Client {
 		void	setChannel(std::string& name);
 		std::string	getChannel() const;
 };
-
-#endif
