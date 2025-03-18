@@ -3,32 +3,52 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/04 08:07:40 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/11 14:18:43 by bsafi            ###   ########.fr       */
+/*   Created: Invalid date        by                   #+#    #+#             */
+/*   Updated: 2025/03/18 15:34:52 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef	CLIENT_HPP
-# define CLIENT_HPP
+#pragma once
 
-#include <iostream>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <netdb.h>
+
+# include <iostream>
+# include <arpa/inet.h>
+
+class Server;
 
 class Client {
 	private:
+		bool	_isConnected;
+		bool _isSigned;
+		bool _allName;
 		int _fd;
+		std::string		_ip;
 		struct in_addr	addr;
+		std::string _userName;
+		std::string _nickName;
+		std::string	_channel;
+		Server*		_server;
 
 	public:
-		Client(){}
-		~Client(){std::cout << "Client " << _fd << "erased." << std::endl;}
+		bool getSign();
+		bool getBoolName();
+		void setSign(bool isSigned);
+		void setBoolName(bool allName);
+		bool	isConnected() const;
+		void	connect();
+		Client(Server* server): _server(server){}
+		~Client(){std::cout << "Client <" << _fd << "> disconnected." << std::endl;}
 		void setFd(int fd);
+		int	getFd() const;
+		std::string	getUserName() const;
+		std::string	getNickName() const;
+		void setUserName(std::string userName);
+		void setNickName(std::string nickName);
 		void setIpAdd(struct in_addr addr);
-		const struct in_addr&	getIp() const;
+		const std::string&	getIp() const;
+		void welcomeMsg();
+		void	setChannel(std::string& name);
+		std::string	getChannel() const;
 };
-
-#endif

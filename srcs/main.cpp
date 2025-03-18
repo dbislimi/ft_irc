@@ -6,7 +6,7 @@
 /*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 13:29:49 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/11 11:54:00 by bsafi            ###   ########.fr       */
+/*   Updated: 2025/03/13 16:30:49 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,7 @@ int main(int ac, char** av){
 		std::cout << "Erro: valid input is ./ircserv <port> <password>" << std::endl;
 		return (1);
 	}
-	(void)av;
-	Server	server("irc", atoi(av[1]));
+	Server	server("irc", atoi(av[1]), av[2]);
 	try {
 		signal(SIGINT, Server::signals);
 		signal(SIGQUIT, Server::signals);
