@@ -69,3 +69,15 @@ void	Client::setChannel(std::string& name){
 std::string	Client::getChannel() const{
     return (_channel);
 }
+
+std::string    Client::getCat() const{
+    return (_to_cat);
+}
+
+std::string	Client::cat(std::string buff){
+	return (_to_cat += buff);
+}
+
+void	Client::clearCat(){
+	_to_cat.clear();
+}

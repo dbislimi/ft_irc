@@ -6,15 +6,14 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 14:22:35 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/18 15:07:55 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/03/20 17:26:08 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Server.hpp"
 
-std::deque<std::string>	split(const char* buff, std::string sep){
+std::deque<std::string>	split(std::string str, std::string sep){
 	std::deque<std::string> deque;
-	std::string	str(buff);
 	size_t	first = 0;
 	size_t	last = 0;
 

@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/03/18 17:15:53 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/03/20 18:14:39 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,7 @@ void Server::newClient(){
 void Server::newCmd(int fd)
 {
 	char buff[1024];
+	
 	memset(buff, 0, sizeof(buff));
 	size_t bytes = recv(fd, buff, sizeof(buff) - 1, 0);
 	if (bytes <= 0){
@@ -111,12 +112,19 @@ void Server::newCmd(int fd)
 		return;
 	}
 	buff[bytes] = 0;
-	_cmd = split(buff, "\r\n");
+	std::string	sbuff(buff);
+	if (!_clients[fd]->getCat().empty() || buff[bytes - 1] != '\n'){
+		sbuff = _clients[fd]->cat(sbuff);
+		if (*(sbuff.end() - 1) != '\n')
+			return ;
+		_clients[fd]->clearCat();
+	}
+	_cmd = split(sbuff, "\r\n");
 	for (std::deque<std::string>::iterator it = _cmd.begin(); it != _cmd.end(); ++it){
-		std::cout << "Data: [" << *it << "]" << std::endl;
+		std::cout << "Data: [" << *it << "] from " << fd << std::endl;
 		if (_clients[fd]->getNickName().empty() && !strncmp((*it).c_str(), "CAP", 3))
 			continue ;
-		handleCmd(buff, split((*it).c_str(), " \t\r\n"), fd);
+		handleCmd(buff, split((*it), " \t\r\n"), fd);
 	}
 }
 

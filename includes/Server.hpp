@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/03/18 17:13:19 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/03/20 17:26:23 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,5 +142,5 @@ class Server {
 		void	PASS(int fd, std::string value);
 };
 	
-std::deque<std::string>	split(const char* buff, std::string sep);
+std::deque<std::string>	split(std::string buff, std::string sep);
 std::string trim(std::string str);
