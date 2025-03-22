@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/03/22 16:38:57 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/03/22 17:13:28 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ class Server {
 		std::vector<struct pollfd>	_fds; 
 		std::deque<std::string> _cmd;
 		std::string _passWord;
-		std::map<std::string, void (Server::*)(int, std::string)> _cmds;
+		std::map<std::string, void (Server::*)(int, std::deque<std::string>)> _cmds;
 		void	_init_socket();
 		
 	public: 
@@ -53,16 +53,17 @@ class Server {
 		void	handleCmd(std::string buff, std::deque<std::string> cmd, int fd);
 		void	get_info(int fd, std::deque<std::string> cmd);
 		void	intro(int clientfd);
+		void	mysend(int fd, std::string msg, int flags);
 
-		void	JOIN(int fd, std::string value);
-		void	USER(int fd, std::string value);
-		void	NICK(int fd, std::string value);
-		void	KICK(int fd, std::string value);
-		void	INVITE(int fd, std::string value);
-		void	TOPIC(int fd, std::string value);
-		void	MODE(int fd, std::string value);
-		void	QUIT(int fd, std::string value);
-		void	PASS(int fd, std::string value);
+		void	JOIN(int fd, std::deque<std::string> cmd);
+		void	USER(int fd, std::deque<std::string> cmd);
+		void	NICK(int fd, std::deque<std::string> cmd);
+		void	KICK(int fd, std::deque<std::string> cmd);
+		void	INVITE(int fd, std::deque<std::string> cmd);
+		void	TOPIC(int fd, std::deque<std::string> cmd);
+		void	MODE(int fd, std::deque<std::string> cmd);
+		void	QUIT(int fd, std::deque<std::string> cmd);
+		void	PASS(int fd, std::deque<std::string> cmd);
 		
 		void createChannel(std::string value);
 		void joinChannel(std::string value, int fd);

@@ -1,6 +1,6 @@
 #include "../includes/all.hpp"
 
-void	Server::TOPIC(int fd, std::string value){
+void	Server::TOPIC(int fd, std::deque<std::string> cmd){
 	(void)fd;
-	(void)value;
+	(void)cmd;
 }

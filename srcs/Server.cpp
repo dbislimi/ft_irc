@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/03/22 16:37:27 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/03/22 18:15:25 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,40 +170,54 @@ void Server::eraseClient(int fd)
 
 void Server::handleCmd(std::string buff, std::deque<std::string> cmd, int fd)
 {
+	(void)buff;
 	std::string	suggest = (_clients[fd]->isConnected()) ? "/join ." : "/password [..] .";
 	std::string	unvalid = cmd[0] + " :Unknown command, please use " + suggest + "\r\n";
-	std::map<std::string, void (Server::*)(int, std::string)>::iterator it = _cmds.find(cmd[0]);
-	
-	if (it != _cmds.end())
-		(this->*(it->second))(fd, cmd[1]);
-	else if (_clients[fd]->getBoolName() == true)
-		_channels[_clients[fd]->getChannel()]->sendChannel(fd, buff);
-	else
-		send(fd, unvalid.c_str(), unvalid.length(), 0);
+	std::map<std::string, void (Server::*)(int, std::deque<std::string>)>::iterator it = _cmds.find(cmd[0]);
+	std::string	ignore_for_now[3] = {"CAP", "WHO", "PRIVMSG"};
+	std::string	no_need_to_log = "USERNICKpassword";
+
+	if (it != _cmds.end()){
+		if (no_need_to_log.find(it->first) != std::string::npos || _clients[fd]->isConnected())
+			(this->*(it->second))(fd, cmd);
+		else
+			mysend(fd, "Not logged in.\r\n", 0);
+		return ;
+	}
+	for (int i = 0; i < 3; ++i)
+		if (cmd[0] == ignore_for_now[i])
+			return ;
+	send(fd, unvalid.c_str(), unvalid.length(), 0);
 }
 
-void	Server::USER(int fd, std::string value){
-	_clients[fd]->setUserName(value);
-	std::cout << "set USER to: " << value << std::endl;
-}
-void	Server::NICK(int fd, std::string value){
-	_clients[fd]->setNickName(value);
-	std::cout << "set NICK to: " << value << std::endl;
+void	Server::USER(int fd, std::deque<std::string> cmd){
+	if (!_clients[fd]->getUserName().empty()){
+		mysend(fd, "You may not reregister\r\n", 0);
+		return ;
+	}
+	_clients[fd]->setUserName(cmd[1]);
 }
 
-void	Server::PASS(int fd, std::string value){
-	(void)value;
+void	Server::NICK(int fd, std::deque<std::string> cmd){
+	if (cmd.size() == 1){
+		mysend(fd, "Usage: NICK <nickname>, sets your nick\r\n", 0);
+		return ;
+	}
+	_clients[fd]->setNickName(cmd[1]);
+}
+
+void	Server::PASS(int fd, std::deque<std::string> cmd){
+	(void)cmd;
 	(void)fd;
-	if (value == this->_passWord){
+	if (cmd[1] == this->_passWord){
 		_clients[fd]->connect();
 		return ;
 	}
-	std::string	bad = "Wrong password ... Please enter a correct password with /password [..].\r\n";
-	send(fd, bad.c_str(), bad.length(), 0);
+	mysend(fd, "Wrong password ... Please enter a correct password with /password [..].\r\n", 0);
 }
 
-void	Server::QUIT(int fd, std::string value){
-	(void)value;
+void	Server::QUIT(int fd, std::deque<std::string> cmd){
+	(void)cmd;
 	eraseClient(fd);
 }
 
@@ -228,4 +242,8 @@ void Server::intro(int clientfd)
 	{
 		throw std::runtime_error("Error : not find client");
 	}
+}
+
+void	Server::mysend(int fd, std::string msg, int flags){
+	send(fd, msg.c_str(), msg.length(), flags);
 }

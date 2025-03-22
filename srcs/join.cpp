@@ -39,19 +39,23 @@ void Server::joinChannel(std::string value, int fd)
 
 void Server::createChannel(std::string value)
 {
-	Channel *channel;
+	Channel *channel = new Channel(value);
 	_channels.insert(std::pair<std::string, Channel *>(value, channel));
 }
 
-void Server::JOIN(int fd, std::string value)
+void Server::JOIN(int fd, std::deque<std::string> cmd)
 {
+	if (cmd.size() == 1){
+		mysend(fd, "Usage: JOIN <channel>, joins the channel\r\n", 0);
+		return ;
+	}
 	std::string msg = "Please add # after /join\r\n";
-	if (value[0] != '#')
+	if (cmd[1][0] != '#')
 		send(fd, msg.c_str(), msg.length(), 0);
 	else
 	{
-		if (!checkChannel(value))
-			createChannel(value);
-		joinChannel(value, fd);
+		if (!checkChannel(cmd[1]))
+			createChannel(cmd[1]);
+		joinChannel(cmd[1], fd);
 	}
 }
