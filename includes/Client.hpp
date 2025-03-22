@@ -6,23 +6,20 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/03/20 18:13:39 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/03/22 16:38:45 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-
-# include <iostream>
-# include <arpa/inet.h>
-
-class Server;
+# include "all.hpp"
 
 class Client {
 	private:
 		bool	_isConnected;
 		bool _isSigned;
 		bool _allName;
+		bool _isOpps;
 		int _fd;
 		std::string		_ip;
 		struct in_addr	addr;

@@ -6,11 +6,11 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 14:22:35 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/20 17:26:08 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/03/22 16:39:02 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/Server.hpp"
+#include "../includes/all.hpp"
 
 std::deque<std::string>	split(std::string str, std::string sep){
 	std::deque<std::string> deque;

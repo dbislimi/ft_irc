@@ -6,14 +6,11 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/03/20 18:14:39 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/03/22 16:37:27 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
-#include "../includes/Server.hpp"
-#include "../includes/Client.hpp"
-#include "../includes/Channel.hpp"
+#include "../includes/all.hpp"
 
 bool Server::signal = false;
 
@@ -186,11 +183,11 @@ void Server::handleCmd(std::string buff, std::deque<std::string> cmd, int fd)
 }
 
 void	Server::USER(int fd, std::string value){
-	(void)fd;
+	_clients[fd]->setUserName(value);
 	std::cout << "set USER to: " << value << std::endl;
 }
 void	Server::NICK(int fd, std::string value){
-	(void)fd;
+	_clients[fd]->setNickName(value);
 	std::cout << "set NICK to: " << value << std::endl;
 }
 
@@ -201,7 +198,7 @@ void	Server::PASS(int fd, std::string value){
 		_clients[fd]->connect();
 		return ;
 	}
-	std::string	bad = "Wrond password ... Please enter a correct password with /password [..].\r\n";
+	std::string	bad = "Wrong password ... Please enter a correct password with /password [..].\r\n";
 	send(fd, bad.c_str(), bad.length(), 0);
 }
 
@@ -214,15 +211,15 @@ void Server::intro(int clientfd)
 {
 	ssize_t bytes;
 
-	std::string test = "welcome to the TEST Internet Relay Chat Network\r\n";
+	std::string test = "Welcome to the TEST Internet Relay Chat Network\r\n";
 	bytes = send(clientfd, test.c_str(), test.size(), 0);
 	if (bytes == -1)
 		throw std::runtime_error("Error: function send failed");
-	test = "your host is " + _name + " running version 1.0\r\n";
+	test = "Your host is " + _name + " running version 1.0\r\n";
 	bytes = send(clientfd, test.c_str(), test.size(), 0);
 	if (bytes == -1)
 		throw std::runtime_error("Error: function send failed");
-	test = "this server was created the 11/03/2025\r\n";
+	test = "This server was created the 11/03/2025\r\n";
 	bytes = send(clientfd, test.c_str(), test.size(), 0);
 	if (bytes == -1)
 		throw std::runtime_error("Error: function send failed");
