@@ -1,4 +1,4 @@
-#include "../includes/Channel.hpp"
+#include "../includes/all.hpp"
 
 void	Channel::add(int fd){
 	this->_users.push_back(fd);

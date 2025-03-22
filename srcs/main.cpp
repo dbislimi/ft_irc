@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 13:29:49 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/13 16:30:49 by bsafi            ###   ########.fr       */
+/*   Updated: 2025/03/19 13:40:31 by dravaono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/Server.hpp"
+#include "../includes/all.hpp"
 
 int main(int ac, char** av){
 	if (ac != 3){

@@ -3,26 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/03/18 15:34:52 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/03/20 14:09:31 by dravaono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-
-# include <iostream>
-# include <arpa/inet.h>
-
-class Server;
+# include "all.hpp"
 
 class Client {
 	private:
 		bool	_isConnected;
 		bool _isSigned;
 		bool _allName;
+		bool _isOpps;
 		int _fd;
 		std::string		_ip;
 		struct in_addr	addr;
