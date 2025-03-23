@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 16:40:16 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/20 13:31:18 by dravaono         ###   ########.fr       */
+/*   Updated: 2025/03/23 12:59:51 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,10 @@ class Channel {
 	private:
 		std::string			_name;
 		std::vector<int>	_users;
+		int					_op;
 
 	public:
-		Channel(const std::string& name): _name(name){}
+		Channel(int op, const std::string& name): _name(name), _op(op){}
 
 		void	add(int fd);
 		void	sendChannel(int fd, std::string msg);

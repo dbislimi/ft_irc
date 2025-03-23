@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/03/22 17:13:28 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/03/23 12:59:03 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ class Server {
 			_cmds["INVITE"] = &Server::INVITE;
 			_cmds["TOPIC"] = &Server::TOPIC;
 			_cmds["MODE"] = &Server::MODE;
+			_cmds["PRIVMSG"] = &Server::PRIVMSG;
 		} 
 		~Server();
 		static void signals(int signum);
@@ -53,7 +54,7 @@ class Server {
 		void	handleCmd(std::string buff, std::deque<std::string> cmd, int fd);
 		void	get_info(int fd, std::deque<std::string> cmd);
 		void	intro(int clientfd);
-		void	mysend(int fd, std::string msg, int flags);
+		ssize_t	mysend(int fd, std::string msg, int flags);
 
 		void	JOIN(int fd, std::deque<std::string> cmd);
 		void	USER(int fd, std::deque<std::string> cmd);
@@ -64,11 +65,14 @@ class Server {
 		void	MODE(int fd, std::deque<std::string> cmd);
 		void	QUIT(int fd, std::deque<std::string> cmd);
 		void	PASS(int fd, std::deque<std::string> cmd);
+		void	PRIVMSG(int fd, std::deque<std::string> cmd);
+
 		
-		void createChannel(std::string value);
+		void createChannel(int op, std::string value);
 		void joinChannel(std::string value, int fd);
 		bool checkChannel(std::string value);
 };
 	
 std::deque<std::string>	split(std::string buff, std::string sep);
 std::string trim(std::string str);
+std::string	catParam(std::deque<std::string> cmd);

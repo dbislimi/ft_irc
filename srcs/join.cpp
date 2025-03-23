@@ -11,7 +11,7 @@ bool Server::checkChannel(std::string value)
 void Server::joinChannel(std::string value, int fd)
 {
 	_nbCliChannel[value].insert(fd);
-
+	_channels[value]->add(fd);
 	std::string msg = ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " JOIN " + value + "\r\n";
 	send(fd, msg.c_str(), msg.length(), 0);
 
@@ -37,9 +37,9 @@ void Server::joinChannel(std::string value, int fd)
 	}
 }
 
-void Server::createChannel(std::string value)
+void Server::createChannel(int op, std::string value)
 {
-	Channel *channel = new Channel(value);
+	Channel *channel = new Channel(op, value);
 	_channels.insert(std::pair<std::string, Channel *>(value, channel));
 }
 
@@ -55,7 +55,7 @@ void Server::JOIN(int fd, std::deque<std::string> cmd)
 	else
 	{
 		if (!checkChannel(cmd[1]))
-			createChannel(cmd[1]);
+			createChannel(fd, cmd[1]);
 		joinChannel(cmd[1], fd);
 	}
 }

@@ -39,6 +39,7 @@ bool	Client::isConnected() const{
 
 
 void Client::setNickName(std::string nickName){
+    updatePrevNick();
     this->_nickName = nickName;
 }
 
@@ -52,6 +53,10 @@ std::string Client::getNickName() const{
 
 std::string Client::getUserName() const{
     return (_userName);
+}
+
+std::string Client::getPrevNick() const{
+    return (_prevNick);
 }
 
 void Client::setBoolName(bool allName){
@@ -79,4 +84,8 @@ std::string	Client::cat(std::string buff){
 
 void	Client::clearCat(){
 	_to_cat.clear();
+}
+
+void    Client::updatePrevNick(){
+    this->_prevNick = this->_nickName;
 }
