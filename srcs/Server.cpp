@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/03/23 12:22:27 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/04 16:29:13 by dravaono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,8 +92,6 @@ void Server::newClient(){
 	_clients.insert(std::pair<int, Client *>(clientfd, clicli));
 	_fds.push_back(poll);
 	std::cout << "Client <" << clientfd << "> Connected" << std::endl;
-	std::string ask = "Please log in with " + BLD + "/password [..]" + RST + ".\r\n";
-	send(clientfd, ask.c_str(), ask.length(), 0);
 	printmap();
 }
 
@@ -171,13 +169,14 @@ void Server::eraseClient(int fd)
 void Server::handleCmd(std::string buff, std::deque<std::string> cmd, int fd)
 {
 	(void)buff;
-	std::string	suggest = (_clients[fd]->isConnected()) ? "/join ." : "/password [..] .";
+	std::string	suggest = (_clients[fd]->isConnected()) ? "/join ." : "/PASS [..] .";
 	std::string	unvalid = cmd[0] + " :Unknown command, please use " + suggest + "\r\n";
 	std::map<std::string, void (Server::*)(int, std::deque<std::string>)>::iterator it = _cmds.find(cmd[0]);
 	std::string	ignore_for_now[3] = {"CAP", "WHO", "PRIVMSG"};
 
 	if (it != _cmds.end()){
-		if (it->first == "password"
+		if (it->first == "PASS"
+			|| it->first == "QUIT"
 			|| (it->first == "NICK" && _clients[fd]->getNickName().empty()) || (it->first == "USER" && _clients[fd]->getUserName().empty())
 			|| _clients[fd]->isConnected())
 			(this->*(it->second))(fd, cmd);
@@ -268,3 +267,10 @@ ssize_t	Server::mysend(int fd, std::string msg, int flags){
 	return send(fd, msg.c_str(), msg.length(), flags);
 }
 
+bool Server::checkClient(std::string value){
+	for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); ++it){
+		if (it->second->getNickName() == value)
+			return true;
+	}
+	return false;
+}

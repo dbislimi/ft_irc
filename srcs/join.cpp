@@ -10,32 +10,43 @@ bool Server::checkChannel(std::string value)
 
 void Server::joinChannel(std::string value, int fd)
 {
-	_nbCliChannel[value].insert(fd);
-	_channels[value]->add(fd);
-	std::string msg = ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " JOIN " + value + "\r\n";
-	send(fd, msg.c_str(), msg.length(), 0);
+    _nbCliChannel[value].insert(fd);
+    _channels[value]->add(fd);
 
-	msg = _clients[fd]->getNickName() + " " + value + " :Bienvenue sur " + value + " !\r\n";
-	send(fd, msg.c_str(), msg.length(), 0);
-
-	msg = _clients[fd]->getNickName() + " = " + value + " :";
-	for (std::set<int>::iterator it = _nbCliChannel[value].begin(); it != _nbCliChannel[value].end(); ++it)
-	{
-		msg += _clients[*it]->getNickName() + " ";
-	}
-	msg += "\r\n";
-	send(fd, msg.c_str(), msg.length(), 0);
-	msg =  _clients[fd]->getNickName() + " " + value + " :End of NAMES list\r\n";
-	send(fd, msg.c_str(), msg.length(), 0);
-	for (std::set<int>::iterator it = _nbCliChannel[value].begin(); it != _nbCliChannel[value].end(); ++it)
-	{
-		if (*it != fd)
-		{
-			msg = ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " JOIN " + value + "\r\n";
-			send(*it, msg.c_str(), msg.length(), 0);
-		}
-	}
+    std::string msg = ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " JOIN " + value + "\r\n";
+    send(fd, msg.c_str(), msg.length(), 0);
+    msg = ":" + _name + " 353 " + _clients[fd]->getNickName() + " = " + value + " :";
+    for (std::set<int>::iterator it = _nbCliChannel[value].begin(); it != _nbCliChannel[value].end(); ++it)
+    {
+        if (*it != fd){
+            msg += _clients[*it]->getNickName() + " ";
+        }
+        // if (*it == fd) {
+        //     msg += "@" + _clients[*it]->getNickName() + " ";
+        // } else {
+        //     msg += _clients[*it]->getNickName() + " ";
+        // }
+    }
+    msg += "\r\n";
+    send(fd, msg.c_str(), msg.length(), 0);
+    msg = ":" + _name +  " 366 " + _clients[fd]->getNickName() + " " + value + " :End of /NAMES list.\r\n";
+    send(fd, msg.c_str(), msg.length(), 0);
+    msg = ":" + _name +  " 324 " + _clients[fd]->getNickName() + " " + value + " :+nt\r\n";
+    send(fd, msg.c_str(), msg.length(), 0);
+    msg = ":" + _name +  " 329 " + _clients[fd]->getNickName() + " " + value + " :1743783418\r\n"; 
+    send(fd, msg.c_str(), msg.length(), 0);
+    msg = ":" + _name +  " 354 " + _clients[fd]->getNickName() + " 152 " + value + " " + _clients[fd]->getNickName() + " " + _clients[fd]->getIp() + "\r\n";
+    send(fd, msg.c_str(), msg.length(), 0);
+    for (std::set<int>::iterator it = _nbCliChannel[value].begin(); it != _nbCliChannel[value].end(); ++it)
+    {
+        if (*it != fd)
+        {
+            msg = ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " JOIN " + value + "\r\n";
+            send(*it, msg.c_str(), msg.length(), 0);
+        }
+    }
 }
+
 
 void Server::createChannel(int op, std::string value)
 {

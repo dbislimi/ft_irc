@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/03/23 12:59:03 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/04 17:50:59 by dravaono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,9 @@ class Server {
 	public: 
 		Server(const std::string& name, int port, std::string password) : _name(name), _port(port), _passWord(password){
 			_cmds["JOIN"] = &Server::JOIN;
+			_cmds["PART"] = &Server::PART;
 			_cmds["QUIT"] = &Server::QUIT;
-			_cmds["password"] = &Server::PASS;
+			_cmds["PASS"] = &Server::PASS;
 			_cmds["NICK"] = &Server::NICK;
 			_cmds["USER"] = &Server::USER;
 			_cmds["KICK"] = &Server::KICK;
@@ -57,6 +58,7 @@ class Server {
 		ssize_t	mysend(int fd, std::string msg, int flags);
 
 		void	JOIN(int fd, std::deque<std::string> cmd);
+		void	PART(int fd, std::deque<std::string> cmd);
 		void	USER(int fd, std::deque<std::string> cmd);
 		void	NICK(int fd, std::deque<std::string> cmd);
 		void	KICK(int fd, std::deque<std::string> cmd);
@@ -71,6 +73,7 @@ class Server {
 		void createChannel(int op, std::string value);
 		void joinChannel(std::string value, int fd);
 		bool checkChannel(std::string value);
+		bool checkClient(std::string value);
 };
 	
 std::deque<std::string>	split(std::string buff, std::string sep);
