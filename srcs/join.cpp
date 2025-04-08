@@ -10,8 +10,12 @@ bool Server::checkChannel(std::string value)
 
 void Server::joinChannel(std::string value, int fd)
 {
+	if (_clients[fd]->getNickName().empty() || _clients[fd]->getUserName().empty()){
+		mysend(fd, "You need to register first. Use NICK <nickname> then USER <username>.\r\n");
+		return ;
+	}
 	_nbCliChannel[value].insert(fd);
-	_channels[value]->add(fd);
+	_channels[value]->add(fd, _clients[fd]->getNickName());
 	std::string msg = ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " JOIN " + value + "\r\n";
 	send(fd, msg.c_str(), msg.length(), 0);
 
@@ -46,7 +50,7 @@ void Server::createChannel(int op, std::string value)
 void Server::JOIN(int fd, std::deque<std::string> cmd)
 {
 	if (cmd.size() == 1){
-		mysend(fd, "Usage: JOIN <channel>, joins the channel\r\n", 0);
+		mysend(fd, "Usage: JOIN <channel>, joins the channel\r\n");
 		return ;
 	}
 	std::string msg = "Please add # after /join\r\n";

@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/03/23 12:59:03 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/08 18:18:44 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ class Server {
 		std::map<std::string, Channel*>	_channels;
 		std::map<std::string, std::set<int> > _nbCliChannel;
 		std::map<int, Client*>	_clients;
+		std::map<std::string, Client*>	_byName;
 		std::vector<struct pollfd>	_fds; 
 		std::deque<std::string> _cmd;
 		std::string _passWord;
@@ -34,7 +35,7 @@ class Server {
 		Server(const std::string& name, int port, std::string password) : _name(name), _port(port), _passWord(password){
 			_cmds["JOIN"] = &Server::JOIN;
 			_cmds["QUIT"] = &Server::QUIT;
-			_cmds["password"] = &Server::PASS;
+			_cmds["PASS"] = &Server::PASS;
 			_cmds["NICK"] = &Server::NICK;
 			_cmds["USER"] = &Server::USER;
 			_cmds["KICK"] = &Server::KICK;
@@ -54,7 +55,7 @@ class Server {
 		void	handleCmd(std::string buff, std::deque<std::string> cmd, int fd);
 		void	get_info(int fd, std::deque<std::string> cmd);
 		void	intro(int clientfd);
-		ssize_t	mysend(int fd, std::string msg, int flags);
+		ssize_t	mysend(int fd, std::string msg);
 
 		void	JOIN(int fd, std::deque<std::string> cmd);
 		void	USER(int fd, std::deque<std::string> cmd);
@@ -75,4 +76,4 @@ class Server {
 	
 std::deque<std::string>	split(std::string buff, std::string sep);
 std::string trim(std::string str);
-std::string	catParam(std::deque<std::string> cmd);
+std::string	catParam(std::deque<std::string> cmd, int start);
