@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/08 19:26:25 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/08 19:43:22 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ class Server {
 		std::map<std::string, Channel*>	_channels;
 		std::map<std::string, std::set<int> > _nbCliChannel;
 		std::map<int, Client*>	_clients;
-		std::map<std::string, Client*>	_byName;
 		std::vector<struct pollfd>	_fds; 
 		std::deque<std::string> _cmd;
 		std::string _passWord;
