@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/08 18:18:44 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/08 19:26:25 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ class Server {
 		void	QUIT(int fd, std::deque<std::string> cmd);
 		void	PASS(int fd, std::deque<std::string> cmd);
 		void	PRIVMSG(int fd, std::deque<std::string> cmd);
-
 		
 		void createChannel(int op, std::string value);
 		void joinChannel(std::string value, int fd);
