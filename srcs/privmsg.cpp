@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   privmsg.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 10:10:17 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/04/08 18:19:36 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/09 18:11:49 by dravaono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,5 +22,5 @@ void	Server::PRIVMSG(int fd, std::deque<std::string> cmd){
 	privmsg = catParam(cmd, 2);
 	privmsg.erase(privmsg.begin());
 	std::string msg = ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " PRIVMSG " + _clients[fd]->getChannel() + " " + cmd[1] + " :" + privmsg + "\r\n";
-	_channels[cmd[1]]->sendChannel(fd, msg);
+	sendChannel(fd, cmd[1], msg);
 }

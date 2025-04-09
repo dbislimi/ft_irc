@@ -6,7 +6,7 @@
 /*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/09 16:42:22 by dravaono         ###   ########.fr       */
+/*   Updated: 2025/04/09 18:14:59 by dravaono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -274,4 +274,18 @@ bool Server::checkClient(std::string value){
 			return true;
 	}
 	return false;
+}
+
+void	Server::sendChannel(int fd, std::string channel_name, std::string msg){
+	for (std::map<std::string, int>::iterator it = _nbCliChannel[channel_name].begin(); it != _nbCliChannel[channel_name].end(); ++it){
+        if (fd == -1 || it->second != fd)
+			send(it->second, msg.c_str(), msg.length(), 0);
+    }
+}
+
+bool Server::findUser(std::string channel_name, std::string nick){
+	std::map<std::string, int>::iterator it = _nbCliChannel[channel_name].find(nick);
+	if (it == _nbCliChannel[channel_name].end())
+		return (false);
+	return (true);
 }
