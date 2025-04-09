@@ -15,6 +15,7 @@ void	Server::MODE(int fd, std::deque<std::string> cmd){
 
 void	Server::MODEi(int fd, std::deque<std::string> cmd){
 	(void)cmd;
+	(void)fd;
 	std::map<std::string, Channel*>::iterator it;
 
 	it = _channels.find(_name);
@@ -52,7 +53,7 @@ void	Server::MODEo(int fd, std::deque<std::string> cmd){
 	std::map<int, Client*>::iterator it;
 	it = _clients.begin();
 	it->second->getNickName();
-	for (std::map<int, Client*>::iterator it = _clients.begin(); it < _clients.end(); ++it){
+	for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); ++it){
 		if (it->second->getNickName() == cmd[2]){
 			
 		}
@@ -64,4 +65,8 @@ void	Server::MODEl(int fd, std::deque<std::string> cmd){
 	(void)fd;
 	(void)cmd;
 	std::cout << "MODEl EST APPELER" << std::endl;
+	if (_clients[fd]->getNickName().empty() || _clients[fd]->getUserName().empty()){
+		mysend(fd, "You need to register first. Use NICK <nickname> then USER <username>.\r\n");
+		return ;
+	}
 }

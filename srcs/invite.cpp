@@ -3,15 +3,15 @@
 void	Server::INVITE(int fd, std::deque<std::string> cmd){
 	std::cout << "FUNCT INVIT" << std::endl;
 	if (cmd.size() != 3){
-		mysend(fd, "Usage: INVITE <nick> [<channel>], invites someone to a channel, by default the current channel\r\n", 0);
+		mysend(fd, "Usage: INVITE <nick> [<channel>], invites someone to a channel, by default the current channel\r\n");
 		return ;
 	}
 	if (!checkClient(cmd[1])){
-		mysend(fd, cmd[1] + " :No such nick\r\n", 0);
+		mysend(fd, cmd[1] + " :No such nick\r\n");
 		return ;
 	}
 	if (!checkChannel(cmd[2])){
-		mysend(fd, cmd[2] + " :No such channel\r\n", 0);
+		mysend(fd, cmd[2] + " :No such channel\r\n");
 		return ;
 	}
 	std::map<int, Client*>::iterator ot = _clients.begin();
@@ -26,6 +26,6 @@ void	Server::INVITE(int fd, std::deque<std::string> cmd){
 			break;
 		it++;
 	}
-	mysend(it->second->getFd(), "You have been invited to \00306" + cmd[2] + "\003 by \00302" + ot->second->getNickName() + "\003\r\n", 0);
-	mysend(fd, "You've invited \00302" + it->second->getNickName() + "\003 to \00306" + cmd[2] + "\003\r\n", 0);
+	mysend(it->second->getFd(), "You have been invited to \00306" + cmd[2] + "\003 by \00302" + ot->second->getNickName() + "\003\r\n");
+	mysend(fd, "You've invited \00302" + it->second->getNickName() + "\003 to \00306" + cmd[2] + "\003\r\n");
 }

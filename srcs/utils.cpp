@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 14:22:35 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/23 10:40:47 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/08 18:18:36 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,11 @@ std::string trim(std::string str) {
 	return (str);
 }
 
-std::string	catParam(std::deque<std::string> cmd){
+std::string	catParam(std::deque<std::string> cmd, int start){
 	std::string param;
 	size_t		size = cmd.size();
 	
-	for (size_t i = 2; i < size; ++i){
+	for (size_t i = start; i < size; ++i){
 			if (i != size - 1)
 				param += cmd[i] + ' ';
 			else

@@ -6,7 +6,7 @@
 /*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/07 15:51:10 by bsafi            ###   ########.fr       */
+/*   Updated: 2025/04/09 17:02:52 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ class Server {
 		void	handleCmd(std::string buff, std::deque<std::string> cmd, int fd);
 		void	get_info(int fd, std::deque<std::string> cmd);
 		void	intro(int clientfd);
-		ssize_t	mysend(int fd, std::string msg, int flags);
+		ssize_t	mysend(int fd, std::string msg);
 
 		void	JOIN(int fd, std::deque<std::string> cmd);
 		void	PART(int fd, std::deque<std::string> cmd);
@@ -73,7 +73,6 @@ class Server {
 		void	QUIT(int fd, std::deque<std::string> cmd);
 		void	PASS(int fd, std::deque<std::string> cmd);
 		void	PRIVMSG(int fd, std::deque<std::string> cmd);
-
 		
 		void createChannel(int op, std::string value);
 		void joinChannel(std::string value, int fd);
@@ -83,4 +82,4 @@ class Server {
 	
 std::deque<std::string>	split(std::string buff, std::string sep);
 std::string trim(std::string str);
-std::string	catParam(std::deque<std::string> cmd);
+std::string	catParam(std::deque<std::string> cmd, int start);
