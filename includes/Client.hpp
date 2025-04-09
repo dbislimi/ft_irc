@@ -29,6 +29,7 @@ class Client {
 		std::string	_channel;
 		Server*		_server;
 		std::string	_to_cat;
+		bool 		_isopps;
 
 	public:
 		Client(Server* server): _isConnected(false), _server(server){}
@@ -55,4 +56,6 @@ class Client {
 		std::string	getCat() const;
 		std::string cat(std::string buff);
 		void		clearCat();
+		bool		getIsopps();
+		void		setIsopps(bool v);
 };

@@ -89,3 +89,4 @@ void	Client::clearCat(){
 void    Client::updatePrevNick(){
     this->_prevNick = this->_nickName;
 }
+

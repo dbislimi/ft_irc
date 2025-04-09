@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 16:40:16 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/03/23 12:59:51 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/07 17:45:54 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ class Channel {
 		std::string			_name;
 		std::vector<int>	_users;
 		int					_op;
+		bool				_invitRestrict;
+		std::string			_mdp;
 
 	public:
 		Channel(int op, const std::string& name): _name(name), _op(op){}
@@ -27,4 +29,9 @@ class Channel {
 		void	sendChannel(int fd, std::string msg);
 		void	joinChannel(std::string channel);
 		bool	findChannel(std::string value);
+
+		bool 		getInvitRestrict();
+		void		setInvitRestrict(bool val);
+		std::string getMdp();
+		void		setMdp(std::string word);
 };

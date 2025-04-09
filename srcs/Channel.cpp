@@ -10,3 +10,19 @@ void	Channel::sendChannel(int fd, std::string msg){
 			send(*it, msg.c_str(), msg.length(), 0);
     }
 }
+
+bool	Channel::getInvitRestrict(){
+	return(_invitRestrict);
+}
+
+void	Channel::setInvitRestrict(bool value){
+	_invitRestrict = value;
+}
+
+std::string	Channel::getMdp(){
+	return (_mdp);
+}
+
+void	Channel::setMdp(std::string w){
+	_mdp = w;
+}

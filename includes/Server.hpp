@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/04 17:50:59 by dravaono         ###   ########.fr       */
+/*   Updated: 2025/04/07 15:51:10 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,11 @@ class Server {
 		void	INVITE(int fd, std::deque<std::string> cmd);
 		void	TOPIC(int fd, std::deque<std::string> cmd);
 		void	MODE(int fd, std::deque<std::string> cmd);
+		void	MODEi(int fd, std::deque<std::string> cmd);
+		void	MODEt(int fd, std::deque<std::string> cmd);
+		void	MODEk(int fd, std::deque<std::string> cmd);
+		void	MODEo(int fd, std::deque<std::string> cmd);
+		void	MODEl(int fd, std::deque<std::string> cmd);
 		void	QUIT(int fd, std::deque<std::string> cmd);
 		void	PASS(int fd, std::deque<std::string> cmd);
 		void	PRIVMSG(int fd, std::deque<std::string> cmd);
