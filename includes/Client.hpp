@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/03/23 11:46:14 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/09 15:34:32 by dravaono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ class Client {
 		bool	_isConnected;
 		bool _isSigned;
 		bool _allName;
-		bool _isOpps;
+		bool _isOps;
 		int _fd;
 		std::string		_ip;
 		struct in_addr	addr;
@@ -35,6 +35,8 @@ class Client {
 		~Client(){std::cout << "Client <" << _fd << "> disconnected." << std::endl;}
 		bool getSign();
 		bool getBoolName();
+		void setBoolOps(bool isOps);
+		bool getBoolOps();
 		void setSign(bool isSigned);
 		void setBoolName(bool allName);
 		bool	isConnected() const;

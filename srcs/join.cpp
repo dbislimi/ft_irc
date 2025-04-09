@@ -47,11 +47,14 @@ void Server::joinChannel(std::string value, int fd)
     }
 }
 
-
 void Server::createChannel(int op, std::string value)
 {
 	Channel *channel = new Channel(op, value);
 	_channels.insert(std::pair<std::string, Channel *>(value, channel));
+    for(std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); ++it){
+        if (op == it->first)
+        
+    }
 }
 
 void Server::JOIN(int fd, std::deque<std::string> cmd)

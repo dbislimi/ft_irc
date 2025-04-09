@@ -67,6 +67,14 @@ bool Client::getBoolName(){
     return (_allName);
 }
 
+void Client::setBoolOps(bool isOps){
+    this->_isOps = isOps;
+}
+
+bool Client::getBoolName(){
+    return (_allName);
+}
+
 void	Client::setChannel(std::string& name){
     this->_channel = name;
 }

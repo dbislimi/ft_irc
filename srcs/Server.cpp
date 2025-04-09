@@ -6,7 +6,7 @@
 /*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/04 16:29:13 by dravaono         ###   ########.fr       */
+/*   Updated: 2025/04/09 15:35:03 by dravaono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ void Server::newClient(){
 	clicli->setFd(clientfd);
 	clicli->setSign(false);
 	clicli->setBoolName(false);
+	clicli->setBoolOps(false);
 	// std::cout << "IP = " << clicli->getFd() << std::endl;
 	clicli->setIpAdd(sa.sin_addr);
 	_clients.insert(std::pair<int, Client *>(clientfd, clicli));
