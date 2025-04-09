@@ -6,7 +6,7 @@
 /*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/09 15:34:32 by dravaono         ###   ########.fr       */
+/*   Updated: 2025/04/09 15:45:45 by dravaono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,11 @@
 class Client {
 	private:
 		bool	_isConnected;
+		bool	_isRegistered;
 		bool _isSigned;
 		bool _allName;
 		bool _isOps;
+		bool	_nick;
 		int _fd;
 		std::string		_ip;
 		struct in_addr	addr;
@@ -31,10 +33,14 @@ class Client {
 		std::string	_to_cat;
 
 	public:
-		Client(Server* server): _isConnected(false), _server(server){}
+		Client(Server* server): _isConnected(false), _isRegistered(false), _nick(false), _server(server){}
 		~Client(){std::cout << "Client <" << _fd << "> disconnected." << std::endl;}
 		bool getSign();
 		bool getBoolName();
+		bool getBoolNick();
+		void setBoolNick();
+		bool getRegister();
+		void setRegister();
 		void setBoolOps(bool isOps);
 		bool getBoolOps();
 		void setSign(bool isSigned);

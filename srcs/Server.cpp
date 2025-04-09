@@ -6,7 +6,7 @@
 /*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/09 15:35:03 by dravaono         ###   ########.fr       */
+/*   Updated: 2025/04/09 16:42:22 by dravaono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,11 @@ void Server::newCmd(int fd)
 			continue ;
 		handleCmd(buff, split((*it), " \t\r\n"), fd);
 	}
+	// if (!_clients[fd]->getNickName().empty() && !_clients[fd]->getUserName().empty()){
+	// 	mysend(fd, ":server 001 " + _clients[fd]->getNickName() +  " :Welcome to the ft_irc Network " + _clients[fd]->getNickName() + "!" +_clients[fd]->getUserName() +"@" +_clients[fd]->getIp() + "\r\n");
+	// 	mysend(fd, ":server 002 " + _clients[fd]->getNickName() +  " :Your host is " +_clients[fd]->getIp() +", running version ft_irc-1.0\r\n");
+	// 	mysend(fd, ":server 003 " + _clients[fd]->getNickName() +  " :This server was created Apr  2 2025 14:48:02");
+	// }
 }
 
 Server::~Server()
@@ -176,13 +181,13 @@ void Server::handleCmd(std::string buff, std::deque<std::string> cmd, int fd)
 	std::string	ignore_for_now[3] = {"CAP", "WHO", "PRIVMSG"};
 
 	if (it != _cmds.end()){
-		if (it->first == "PASS"
-			|| it->first == "QUIT"
-			|| (it->first == "NICK" && _clients[fd]->getNickName().empty()) || (it->first == "USER" && _clients[fd]->getUserName().empty())
+		if (it->first == "PASS")
+			PASS(fd, cmd);
+		else if (it->first == "QUIT"
 			|| _clients[fd]->isConnected())
 			(this->*(it->second))(fd, cmd);
 		else
-			mysend(fd, "Not logged in.\r\n", 0);
+			mysend(fd, "Not logged in. use PASS <password>\r\n");
 		return ;
 	}
 	for (int i = 0; i < 3; ++i)
@@ -192,48 +197,43 @@ void Server::handleCmd(std::string buff, std::deque<std::string> cmd, int fd)
 }
 
 void	Server::USER(int fd, std::deque<std::string> cmd){
-	if (!_clients[fd]->getUserName().empty()){
-		mysend(fd, "You may not reregister\r\n", 0);
+	if (_clients[fd]->getRegister() == true){
+		mysend(fd, "You may not reregister\r\n");
 		return ;
 	}
 	_clients[fd]->setUserName(cmd[1]);
-	mysend(fd, ":" + _clients[fd]->getPrevNick() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " NICK :" + _clients[fd]->getNickName() + "\r\n", 0);
 }
 
 void	Server::NICK(int fd, std::deque<std::string> cmd){
 	if (cmd.size() == 1){
-		mysend(fd, "Usage: NICK <nickname>, sets your nick\r\n", 0);
+		mysend(fd, "Usage: NICK <nickname>, sets your nick\r\n");
 		return ;
 	}
-	_clients[fd]->setNickName(cmd[1]);
+	if (_clients[fd]->getNickName().empty())
+		_clients[fd]->setNickName(cmd[1]);
 	for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end();){
 		if (it->first != fd && it->second->getNickName() == cmd[1]){
-			if (_clients[fd]->getPrevNick().empty()){
-				mysend(fd, "\00318" + cmd[1] + "\003 is already in use. Retrying with \00318" + cmd[1] + "_\017...\r\n", 0);
-				cmd[1] += '_';
-				it = _clients.begin();
-				continue ;				
-			}
-			mysend(fd, cmd[1] + " :Nickname is already in use.\r\n", 0);
+			mysend(fd, ":server 433 " + cmd[1] + " :Nickname already taken\r\n");
 			return ;
 		}
 		++it;
 	}
 	if (!_clients[fd]->getUserName().empty())
-		mysend(fd, ":" + _clients[fd]->getPrevNick() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " NICK :" + cmd[1] + "\r\n", 0);
+		mysend(fd, ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " NICK :" + cmd[1] + "\r\n");
 	_clients[fd]->setNickName(cmd[1]);
+
 }
 
 void	Server::PASS(int fd, std::deque<std::string> cmd){
 	if (cmd.size() == 1){
-		mysend(fd, "Usage: /password <password>, logs you in\r\n", 0);
+		mysend(fd, "Usage: /PASS <password>, logs you in\r\n");
 		return ;
 	}
 	if (cmd[1] == this->_passWord){
 		_clients[fd]->connect();
 		return ;
 	}
-	mysend(fd, "Wrong password ...\r\nPlease try again.\r\n", 0);
+	mysend(fd, "Wrong password ...\r\nPlease try again.\r\n");
 }
 
 void	Server::QUIT(int fd, std::deque<std::string> cmd){
@@ -264,8 +264,8 @@ void Server::intro(int clientfd)
 	}
 }
 
-ssize_t	Server::mysend(int fd, std::string msg, int flags){
-	return send(fd, msg.c_str(), msg.length(), flags);
+ssize_t	Server::mysend(int fd, std::string msg){
+	return send(fd, msg.c_str(), msg.length(), 0);
 }
 
 bool Server::checkClient(std::string value){

@@ -71,9 +71,7 @@ void Client::setBoolOps(bool isOps){
     this->_isOps = isOps;
 }
 
-bool Client::getBoolName(){
-    return (_allName);
-}
+
 
 void	Client::setChannel(std::string& name){
     this->_channel = name;
@@ -96,4 +94,20 @@ void	Client::clearCat(){
 
 void    Client::updatePrevNick(){
     this->_prevNick = this->_nickName;
+}
+
+bool Client::getBoolNick(){
+    return (this->_nick);
+}
+
+void Client::setBoolNick(){
+    _nick = true;
+}
+
+bool Client::getRegister(){
+    return (this->_isRegistered);
+}
+
+void Client::setRegister(){
+    _isRegistered = true;
 }
