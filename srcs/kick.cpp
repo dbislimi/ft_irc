@@ -20,15 +20,14 @@ void	Server::KICK(int fd, std::deque<std::string> cmd){
 		mysend(fd, ":serveur 482 " + _clients[fd]->getNickName() + " " + cmd[1] + " :You're not channel operator\r\n");
 		return ;
 	}
-	if (_channels[cmd[1]]->findUser(cmd[2]) == false){
+	if (findUser(cmd[1], cmd[2]) == false){
 		mysend(fd, ":serveur 401 " + _clients[fd]->getNickName() + " " + cmd[2] + " :No such nick\r\n");
 		return ;
 	}
 	reason = catParam(cmd, 3);
 	if (reason.empty())
 		reason = ":" + _clients[fd]->getNickName();
-	_channels[cmd[1]]->sendChannel(-1, ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " KICK " + cmd[1] + " " + cmd[2] + " " + reason + "\r\n");
-	std::cout << "nick: " << cmd[2] << ", fd: " << _channels[cmd[1]]->findFd(cmd[2]) << std::endl;
-	_nbCliChannel[cmd[1]].erase(_channels[cmd[1]]->findFd(cmd[2]));
-	_channels[cmd[1]]->erase(cmd[2]);
+	sendChannel(-1, cmd[1], ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " KICK " + cmd[1] + " " + cmd[2] + " " + reason + "\r\n");
+	_channels[cmd[1]]->removeOp((_nbCliChannel[cmd[1]].find(cmd[2]))->second);
+	_nbCliChannel[cmd[1]].erase(cmd[2]);
 }

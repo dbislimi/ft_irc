@@ -6,7 +6,7 @@
 /*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/09 17:02:52 by bsafi            ###   ########.fr       */
+/*   Updated: 2025/04/09 19:27:50 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ class Server {
 		int					_port; 
 		int					_serverFd;
 		std::map<std::string, Channel*>	_channels;
-		std::map<std::string, std::set<int> > _nbCliChannel;
+		std::map<std::string, std::map<std::string, int> > _nbCliChannel;
 		std::map<int, Client*>	_clients;
 		std::vector<struct pollfd>	_fds; 
 		std::deque<std::string> _cmd;
@@ -78,6 +78,8 @@ class Server {
 		void joinChannel(std::string value, int fd);
 		bool checkChannel(std::string value);
 		bool checkClient(std::string value);
+		void sendChannel(int fd, std::string channel_name, std::string msg);
+		bool findUser(std::string channel_name, std::string nick);
 };
 	
 std::deque<std::string>	split(std::string buff, std::string sep);
