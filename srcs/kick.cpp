@@ -13,7 +13,7 @@ void	Server::KICK(int fd, std::deque<std::string> cmd){
 		return ;
 	}
 	if (_channels.find(cmd[1]) == _channels.end()){
-		mysend(fd, "No such channel.\r\n");
+		mysend(fd, ":serveur 403 " + _clients[fd]->getNickName() + " " + cmd[1] + " :No such channel\r\n");
 		return ;
 	}
 	if (_channels[cmd[1]]->isOp(fd) == false){

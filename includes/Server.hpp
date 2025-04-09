@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/09 18:11:25 by dravaono         ###   ########.fr       */
+/*   Updated: 2025/04/09 20:59:57 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,3 +80,4 @@ class Server {
 std::deque<std::string>	split(std::string buff, std::string sep);
 std::string trim(std::string str);
 std::string	catParam(std::deque<std::string> cmd, int start);
+std::string longToString(long value);

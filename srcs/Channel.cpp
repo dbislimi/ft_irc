@@ -19,3 +19,19 @@ void	Channel::removeOp(int fd){
 void    Channel::addOp(int fd){
     _ops.push_back(fd);
 }
+
+void		Channel::setTopic(std::string topic){
+	_topic = topic;
+}
+
+std::string	Channel::getTopic() const{
+	return (_topic);
+}
+
+void	Channel::setTime(){
+	_timestamp = std::time(NULL);
+}
+
+std::time_t	Channel::getTime() const{
+	return (_timestamp);
+}

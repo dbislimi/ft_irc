@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 14:22:35 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/04/08 18:18:36 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/09 20:59:49 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,4 +46,10 @@ std::string	catParam(std::deque<std::string> cmd, int start){
 				param += cmd[i];
 	}
 	return (param);
+}
+
+std::string longToString(long value){
+    std::ostringstream oss;
+    oss << value;
+    return (oss.str());
 }
