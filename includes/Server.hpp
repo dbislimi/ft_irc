@@ -6,7 +6,7 @@
 /*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/09 19:27:50 by bsafi            ###   ########.fr       */
+/*   Updated: 2025/04/10 20:49:19 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,3 +85,4 @@ class Server {
 std::deque<std::string>	split(std::string buff, std::string sep);
 std::string trim(std::string str);
 std::string	catParam(std::deque<std::string> cmd, int start);
+bool		isnumber(std::string s);

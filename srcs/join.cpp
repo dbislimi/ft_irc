@@ -50,6 +50,8 @@ void Server::createChannel(int op, std::string value)
 {
 	Channel *channel = new Channel(op, value);
 	_channels.insert(std::pair<std::string, Channel *>(value, channel));
+	channel->setInvitRestrict(false);
+	channel->setIsmdp(false);
 }
 
 void Server::JOIN(int fd, std::deque<std::string> cmd)
@@ -63,7 +65,7 @@ void Server::JOIN(int fd, std::deque<std::string> cmd)
 		send(fd, msg.c_str(), msg.length(), 0);
 	else
 	{
-		if (!checkChannel(cmd[1]))
+	if (!checkChannel(cmd[1]))
 			createChannel(fd, cmd[1]);
 		joinChannel(cmd[1], fd);
 	}

@@ -51,18 +51,36 @@ void Server::MODEk(int fd, std::deque<std::string> cmd)
 	std::map<std::string, Channel *>::iterator it;
 	std::string msg;
 
-	it = _channels.find(_name);
-	if (cmd[2].empty())
-	{
-		it->second->setMdp(NULL);
-	}
-	else
-	{
-		it->second->setMdp(cmd[2]);
-		msg = "New mdp is " + it->second->getMdp() + "\r\n";
+	it = _channels.find(cmd[1]);
+	if (cmd[3].empty()){
+		msg = "error MODE k :Not enough parameters\r\n";
 		send(fd, msg.c_str(), msg.length(), 0);
 	}
-	std::cout << "MODEk EST APPELER" << std::endl;
+	if (cmd[2] == "+k" && !(cmd[3].empty()))
+	{
+		if (it->second->getIsmdp() == false ){//&& _clients[fd]->getBoolOps() == true){
+			it->second->setMdp(cmd[3]);
+			it->second->setIsmdp(true);
+			msg = ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " MODE " + cmd[1] + " " + cmd[2] + " " + cmd[3] + "\r\n";
+			send(fd, msg.c_str(), msg.length(), 0);
+		}
+		else if (it->second->getIsmdp() == true ){//&& _clients[fd]->getBoolOps() == true){
+			msg = ":" + _name + " 467 " + _clients[fd]->getNickName() + " " + cmd[1] + " :Channel key already set\r\n";
+			send(fd, msg.c_str(), msg.length(), 0);
+		}
+	}
+	else if (cmd[2] == "-k" && !(cmd[3].empty())){
+		if (cmd[3] == it->second->getMdp()){
+			it->second->setMdp("");
+			it->second->setIsmdp(false);
+			msg =  ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " MODE " + cmd[1] + " " + cmd[2] + " " + cmd[3] + "\r\n";
+			send(fd, msg.c_str(), msg.length(), 0);
+		}
+		else{
+			msg = ":" + _name + " 467 " + _clients[fd]->getNickName() + " " + cmd[1] + " :Channel key already set\r\n";
+			send(fd, msg.c_str(), msg.length(), 0);
+		}
+	}
 }
 
 void Server::MODEo(int fd, std::deque<std::string> cmd)
@@ -95,12 +113,24 @@ void Server::MODEo(int fd, std::deque<std::string> cmd)
 
 void Server::MODEl(int fd, std::deque<std::string> cmd)
 {
-	(void)fd;
-	(void)cmd;
-	std::cout << "MODEl EST APPELER" << std::endl;
+	std::map<std::string, Channel *>::iterator it;
+	std::string msg;
+
+	it = _channels.find(cmd[1]);
+	std::cout << cmd[3] << std::endl;
 	if (_clients[fd]->getNickName().empty() || _clients[fd]->getUserName().empty())
 	{
 		mysend(fd, "You need to register first. Use NICK <nickname> then USER <username>.\r\n");
 		return;
+	}
+	if (cmd[2] == "+l" && !(cmd[3].empty()) && isnumber(cmd[3]) == true){
+		it->second->setLimitUser(atoi(cmd[3].c_str()));
+		msg =  ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " MODE " + cmd[1] + " " + cmd[2] + " " + cmd[3] + "\r\n";
+		send(fd, msg.c_str(), msg.length(), 0);
+	}
+	else if (cmd[2] == "-l"){
+		it->second->setLimitUser(INT_MAX);
+		msg =  ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " MODE " + cmd[1] + " " + cmd[2] + "\r\n";
+		send(fd, msg.c_str(), msg.length(), 0);
 	}
 }

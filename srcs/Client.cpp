@@ -71,6 +71,9 @@ void Client::setBoolOps(bool isOps){
     this->_isOps = isOps;
 }
 
+bool Client::getBoolOps(){
+    return _isOps;
+}
 
 
 void	Client::setChannel(std::string& name){
@@ -112,3 +115,10 @@ void Client::setRegister(){
     _isRegistered = true;
 }
 
+/*bool Client::getIsopps(){
+    return _isopps;
+}
+
+void Client::setIsopps(bool val){
+    _isopps = val;
+}*/

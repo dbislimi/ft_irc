@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 14:22:35 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/04/08 18:18:36 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/10 20:48:52 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,4 +46,13 @@ std::string	catParam(std::deque<std::string> cmd, int start){
 				param += cmd[i];
 	}
 	return (param);
+}
+
+bool	isnumber(std::string s){
+	int i = -1;
+	while (s[++i]){
+		if (!(std::isdigit(s[i])))
+			return false;
+	}
+	return true;
 }

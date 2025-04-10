@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/09 15:45:45 by dravaono         ###   ########.fr       */
+/*   Updated: 2025/04/10 18:28:55 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,6 @@ class Client {
 		std::string	getCat() const;
 		std::string cat(std::string buff);
 		void		clearCat();
-		bool		getIsopps();
-		void		setIsopps(bool v);
+		//bool		getIsopps();
+		//void		setIsopps(bool v);
 };
