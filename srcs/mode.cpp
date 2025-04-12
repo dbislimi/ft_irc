@@ -3,8 +3,13 @@
 void	Server::MODE(int fd, std::deque<std::string> cmd){
 	(void)fd;
 	(void)cmd;
-	if (_clients[fd]->getNickName().empty() || _clients[fd]->getUserName().empty()){
-		mysend(fd, "You need to register first. Use NICK <nickname> then USER <username>.\r\n");
+	if (_clients[fd]->getNickName().empty()){
+		mysend(fd, ":server 451 * :You have not registered\r\n");
 		return ;
 	}
+	if (_clients[fd]->getUserName().empty()){
+		mysend(fd, ":server 451 " + _clients[fd]->getNickName() +  " :You have not registered\r\n");
+		return ;
+	}
+
 }

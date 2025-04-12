@@ -10,10 +10,6 @@ bool Server::checkChannel(std::string value)
 
 void Server::joinChannel(std::string value, int fd)
 {
-	if (_clients[fd]->getNickName().empty() || _clients[fd]->getUserName().empty()){
-		mysend(fd, "You need to register first. Use NICK <nickname> then USER <username>.\r\n");
-		return ;
-	}
 	_nbCliChannel[value].insert(std::pair<std::string, int>(_clients[fd]->getNickName(), fd));
 	std::string msg = ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " JOIN " + value + "\r\n";
 	send(fd, msg.c_str(), msg.length(), 0);
@@ -54,8 +50,17 @@ void Server::createChannel(int op, std::string value)
 
 void Server::JOIN(int fd, std::deque<std::string> cmd)
 {
+	if (_clients[fd]->getNickName().empty()){
+		mysend(fd, ":server 451 * :You have not registered\r\n");
+		return ;
+	}
+	if (_clients[fd]->getUserName().empty()){
+		mysend(fd, ":server 451 " + _clients[fd]->getNickName() +  " :You have not registered\r\n");
+		return ;
+	}
+
 	if (cmd.size() == 1){
-		mysend(fd, "Usage: JOIN <channel>, joins the channel\r\n");
+		mysend(fd, ":server 461 " + _clients[fd]->getNickName() +  " " + cmd[0] + " :Not enough parameters\r\n");
 		return ;
 	}
 	std::string msg = "Please add # after /join\r\n";

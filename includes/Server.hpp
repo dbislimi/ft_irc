@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/09 20:59:57 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/12 16:34:02 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ class Server {
 			_cmds["PASS"] = &Server::PASS;
 			_cmds["NICK"] = &Server::NICK;
 			_cmds["USER"] = &Server::USER;
+			_cmds["user"] = &Server::USER;
 			_cmds["KICK"] = &Server::KICK;
 			_cmds["INVITE"] = &Server::INVITE;
 			_cmds["TOPIC"] = &Server::TOPIC;
@@ -52,7 +53,7 @@ class Server {
 		void	printmap();
 		void	eraseClient(int fd);
 		void 	checkPassword(int fd);
-		void	handleCmd(std::string buff, std::deque<std::string> cmd, int fd);
+		void	handleCmd(std::deque<std::string> cmd, int fd);
 		void	get_info(int fd, std::deque<std::string> cmd);
 		void	intro(int clientfd);
 		ssize_t	mysend(int fd, std::string msg);

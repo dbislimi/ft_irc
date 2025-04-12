@@ -3,10 +3,15 @@
 void	Server::TOPIC(int fd, std::deque<std::string> cmd){
 	size_t	size = cmd.size();
 
-	if (_clients[fd]->getNickName().empty() || _clients[fd]->getUserName().empty()){
-		mysend(fd, "You need to register first. Use NICK <nickname> then USER <username>.\r\n");
+	if (_clients[fd]->getNickName().empty()){
+		mysend(fd, ":server 451 * :You have not registered\r\n");
 		return ;
 	}
+	if (_clients[fd]->getUserName().empty()){
+		mysend(fd, ":server 451 " + _clients[fd]->getNickName() +  " :You have not registered\r\n");
+		return ;
+	}
+
 	if (size == 1){
 		mysend(fd, ":serveur 461 " + _clients[fd]->getNickName() + " " + cmd[1] + " :Not enough parameters\r\n");
 		return ;

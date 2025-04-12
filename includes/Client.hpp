@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/09 15:45:45 by dravaono         ###   ########.fr       */
+/*   Updated: 2025/04/12 16:37:03 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 class Client {
 	private:
 		bool	_isConnected;
-		bool	_isRegistered;
 		bool _isSigned;
 		bool _allName;
 		bool _isOps;
@@ -27,20 +26,18 @@ class Client {
 		struct in_addr	addr;
 		std::string _userName;
 		std::string _nickName;
-		std::string	_prevNick;
+		std::string	_tempNick;
 		std::string	_channel;
 		Server*		_server;
 		std::string	_to_cat;
 
 	public:
-		Client(Server* server): _isConnected(false), _isRegistered(false), _nick(false), _server(server){}
+		Client(Server* server): _isConnected(false), _nick(false), _server(server){}
 		~Client(){std::cout << "Client <" << _fd << "> disconnected." << std::endl;}
 		bool getSign();
 		bool getBoolName();
 		bool getBoolNick();
 		void setBoolNick();
-		bool getRegister();
-		void setRegister();
 		void setBoolOps(bool isOps);
 		bool getBoolOps();
 		void setSign(bool isSigned);
@@ -51,10 +48,10 @@ class Client {
 		int	getFd() const;
 		std::string	getUserName() const;
 		std::string	getNickName() const;
-		std::string getPrevNick() const;
+		std::string getTempNick() const;
 		void setUserName(std::string userName);
 		void setNickName(std::string nickName);
-		void updatePrevNick();
+		void setTempNick(std::string nick);
 		void setIpAdd(struct in_addr addr);
 		const std::string&	getIp() const;
 		void welcomeMsg();

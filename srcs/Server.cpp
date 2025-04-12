@@ -3,16 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/09 18:14:59 by dravaono         ###   ########.fr       */
+/*   Updated: 2025/04/12 16:12:08 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/all.hpp"
 
 bool Server::signal = false;
+
+Server::~Server()
+{
+	for (size_t i = 0; i < _fds.size(); ++i)
+	{
+		std::cout << "closing fd: " << _fds[i].fd << std::endl;
+		close(_fds[i].fd);
+	}
+	for (std::map<int, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
+		delete it->second;
+	_clients.clear();
+	_fds.clear();
+}
 
 void Server::signals(int signum)
 {
@@ -85,10 +98,9 @@ void Server::newClient(){
 	poll.events = POLLIN;
 	poll.revents = 0;
 	clicli->setFd(clientfd);
-	clicli->setSign(false);
-	clicli->setBoolName(false);
-	clicli->setBoolOps(false);
-	// std::cout << "IP = " << clicli->getFd() << std::endl;
+	//clicli->setSign(false);
+	//clicli->setBoolName(false);
+	//clicli->setBoolOps(false);
 	clicli->setIpAdd(sa.sin_addr);
 	_clients.insert(std::pair<int, Client *>(clientfd, clicli));
 	_fds.push_back(poll);
@@ -120,38 +132,26 @@ void Server::newCmd(int fd)
 		std::cout << "Data: [" << *it << "] from " << fd << std::endl;
 		if (_clients[fd]->getNickName().empty() && !strncmp((*it).c_str(), "CAP", 3))
 			continue ;
-		handleCmd(buff, split((*it), " \t\r\n"), fd);
+		handleCmd(split((*it), " \t\r\n"), fd);
 	}
-	// if (!_clients[fd]->getNickName().empty() && !_clients[fd]->getUserName().empty()){
-	// 	mysend(fd, ":server 001 " + _clients[fd]->getNickName() +  " :Welcome to the ft_irc Network " + _clients[fd]->getNickName() + "!" +_clients[fd]->getUserName() +"@" +_clients[fd]->getIp() + "\r\n");
-	// 	mysend(fd, ":server 002 " + _clients[fd]->getNickName() +  " :Your host is " +_clients[fd]->getIp() +", running version ft_irc-1.0\r\n");
-	// 	mysend(fd, ":server 003 " + _clients[fd]->getNickName() +  " :This server was created Apr  2 2025 14:48:02");
-	// }
 }
 
-Server::~Server()
+void Server::handleCmd(std::deque<std::string> cmd, int fd)
 {
-	for (size_t i = 0; i < _fds.size(); ++i)
-	{
-		std::cout << "closing fd: " << _fds[i].fd << std::endl;
-		close(_fds[i].fd);
-	}
-	for (std::map<int, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
-		delete it->second;
-	_clients.clear();
-	_fds.clear();
-}
+	std::map<std::string, void (Server::*)(int, std::deque<std::string>)>::iterator it = _cmds.find(cmd[0]);
+	std::string	ignore_for_now[3] = {"CAP", "WHO", "PRIVMSG"};
 
-void Server::printmap()
-{
-	std::cout << std::endl
-			  << "Map: " << std::endl;
-	for (std::map<int, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
-	{
-
-		std::cout << "[" << it->first << "] = " << it->second->getIp() << std::endl;
+	if (it != _cmds.end()){
+		if (it->first == "PASS")
+			PASS(fd, cmd);
+		else if (it->first == "QUIT" || _clients[fd]->isConnected())
+			(this->*(it->second))(fd, cmd);
+		return ;
 	}
-	std::cout << std::endl;
+	for (int i = 0; i < 3; ++i)
+		if (cmd[0] == ignore_for_now[i])
+			return ;
+	mysend(fd, ":server 421 " + _clients[fd]->getNickName() +  " " + cmd[0] + " :Unknown command\r\n");
 }
 
 void Server::eraseClient(int fd)
@@ -172,69 +172,6 @@ void Server::eraseClient(int fd)
 	close(fd);
 }
 
-void Server::handleCmd(std::string buff, std::deque<std::string> cmd, int fd)
-{
-	(void)buff;
-	std::string	suggest = (_clients[fd]->isConnected()) ? "/join ." : "/PASS [..] .";
-	std::string	unvalid = cmd[0] + " :Unknown command, please use " + suggest + "\r\n";
-	std::map<std::string, void (Server::*)(int, std::deque<std::string>)>::iterator it = _cmds.find(cmd[0]);
-	std::string	ignore_for_now[3] = {"CAP", "WHO", "PRIVMSG"};
-
-	if (it != _cmds.end()){
-		if (it->first == "PASS")
-			PASS(fd, cmd);
-		else if (it->first == "QUIT"
-			|| _clients[fd]->isConnected())
-			(this->*(it->second))(fd, cmd);
-		else
-			mysend(fd, "Not logged in. use PASS <password>\r\n");
-		return ;
-	}
-	for (int i = 0; i < 3; ++i)
-		if (cmd[0] == ignore_for_now[i])
-			return ;
-	send(fd, unvalid.c_str(), unvalid.length(), 0);
-}
-
-void	Server::USER(int fd, std::deque<std::string> cmd){
-	if (_clients[fd]->getRegister() == true){
-		mysend(fd, "You may not reregister\r\n");
-		return ;
-	}
-	_clients[fd]->setUserName(cmd[1]);
-}
-
-void	Server::NICK(int fd, std::deque<std::string> cmd){
-	if (cmd.size() == 1){
-		mysend(fd, "Usage: NICK <nickname>, sets your nick\r\n");
-		return ;
-	}
-	if (_clients[fd]->getNickName().empty())
-		_clients[fd]->setNickName(cmd[1]);
-	for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end();){
-		if (it->first != fd && it->second->getNickName() == cmd[1]){
-			mysend(fd, ":server 433 " + cmd[1] + " :Nickname already taken\r\n");
-			return ;
-		}
-		++it;
-	}
-	if (!_clients[fd]->getUserName().empty())
-		mysend(fd, ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " NICK :" + cmd[1] + "\r\n");
-	_clients[fd]->setNickName(cmd[1]);
-
-}
-
-void	Server::PASS(int fd, std::deque<std::string> cmd){
-	if (cmd.size() == 1){
-		mysend(fd, "Usage: /PASS <password>, logs you in\r\n");
-		return ;
-	}
-	if (cmd[1] == this->_passWord){
-		_clients[fd]->connect();
-		return ;
-	}
-	mysend(fd, "Wrong password ...\r\nPlease try again.\r\n");
-}
 
 void	Server::QUIT(int fd, std::deque<std::string> cmd){
 	(void)cmd;
@@ -288,4 +225,16 @@ bool Server::findUser(std::string channel_name, std::string nick){
 	if (it == _nbCliChannel[channel_name].end())
 		return (false);
 	return (true);
+}
+
+void Server::printmap()
+{
+	std::cout << std::endl
+			  << "Clients: " << std::endl;
+	for (std::map<int, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
+	{
+
+		std::cout << "[" << it->first << "] = " << it->second->getIp() << std::endl;
+	}
+	std::cout << std::endl;
 }
