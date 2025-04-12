@@ -6,7 +6,7 @@
 /*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 16:40:16 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/04/10 20:54:06 by bsafi            ###   ########.fr       */
+/*   Updated: 2025/04/11 18:57:39 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ class Channel {
 		bool				_ismdp;
 		std::string			_mdp;
 		int					_limitUser;
+		bool				_isTopicRestrict;
 
 	public:
 		Channel(int op, const std::string& name): _name(name){_ops.push_back(op);}
@@ -38,4 +39,6 @@ class Channel {
 		void		setIsmdp(bool val);
 		int 		getLimitUser();
 		void		setLimitUser(int val);
+		bool		getTopicRestrict();
+		void		setTopicRestrict(bool val);
 };

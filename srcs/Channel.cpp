@@ -51,3 +51,11 @@ int			Channel::getLimitUser(){
 void		Channel::setLimitUser(int val){
 	_limitUser = val;
 }
+
+void		Channel::setTopicRestrict(bool val){
+	_isTopicRestrict = val;
+}
+
+bool		Channel::getTopicRestrict(){
+	return (_isTopicRestrict);
+}

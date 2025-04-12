@@ -52,6 +52,7 @@ void Server::createChannel(int op, std::string value)
 	_channels.insert(std::pair<std::string, Channel *>(value, channel));
 	channel->setInvitRestrict(false);
 	channel->setIsmdp(false);
+	channel->setTopicRestrict(true);
 }
 
 void Server::JOIN(int fd, std::deque<std::string> cmd)

@@ -41,9 +41,36 @@ void Server::MODEi(int fd, std::deque<std::string> cmd)
 
 void Server::MODEt(int fd, std::deque<std::string> cmd)
 {
-	(void)fd;
-	(void)cmd;
-	std::cout << "MODEt EST APPELER" << std::endl;
+	std::map<std::string, Channel *>::iterator it;
+	std::string msg;
+
+	it = _channels.find(cmd[1]);
+	if (cmd[2] == "+t"){
+		if (it->second->getTopicRestrict() == 0){
+			msg = ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " MODE " + cmd[1] + " " + cmd[2] + "\r\n";
+			send(fd, msg.c_str(), msg.length(), 0);
+			it->second->setTopicRestrict(true);
+			if (!(cmd[3].empty())){
+				msg = ":" + _name + " 472 " + _clients[fd]->getNickName() + " " + cmd[1] + " :is unknown mode char to me\r\n";
+				send(fd, msg.c_str(), msg.length(), 0);
+			}
+		}
+		else
+			return;
+	}
+	else{
+		if (it->second->getTopicRestrict() == 1){
+			msg = ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " MODE " + cmd[1] + " " + cmd[2] + "\r\n";
+			send(fd, msg.c_str(), msg.length(), 0);
+			it->second->setTopicRestrict(false);
+			if (!(cmd[3].empty())){
+				msg = ":" + _name + " 472 " + _clients[fd]->getNickName() + " " + cmd[1] + " :is unknown mode char to me\r\n";
+				send(fd, msg.c_str(), msg.length(), 0);
+			}
+		}
+		else
+			return;
+	}
 }
 
 void Server::MODEk(int fd, std::deque<std::string> cmd)
