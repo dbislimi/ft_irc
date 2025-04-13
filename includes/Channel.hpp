@@ -5,10 +5,13 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/13 16:40:16 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/04/11 18:57:39 by bsafi            ###   ########.fr       */
+/*   Created: Invalid date        by                   #+#    #+#             */
+/*   Updated: 2025/04/12 18:47:59 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+
+
 
 #pragma once
 
@@ -17,7 +20,9 @@
 class Channel {
 	private:
 		std::string			_name;
-		std::deque<int>					_ops;
+		std::string			_topic;
+		std::time_t			_timestamp;
+		std::deque<int>		_ops;
 		bool				_invitRestrict;
 		bool				_ismdp;
 		std::string			_mdp;
@@ -27,10 +32,14 @@ class Channel {
 	public:
 		Channel(int op, const std::string& name): _name(name){_ops.push_back(op);}
 
-		bool		isOp(int fd);
+		bool	isOp(int fd);
 		void	removeOp(int fd);
 		void	addOp(int fd);
-		
+
+		void		setTopic(std::string topic);
+		std::string	getTopic() const;
+		void		setTime();
+		std::time_t	getTime() const;
 		bool 		getInvitRestrict();
 		void		setInvitRestrict(bool val);
 		std::string getMdp();

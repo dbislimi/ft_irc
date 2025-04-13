@@ -3,6 +3,7 @@
 # include <algorithm>
 # include <exception>
 # include <cstring>
+# include <sstream>
 # include <cstdlib>
 # include <unistd.h>
 # include <cstdio>
@@ -13,6 +14,7 @@
 # include <netinet/in.h>
 # include <netdb.h>
 # include <vector>
+# include <ctime>
 
 # include <csignal>
 # include <map>

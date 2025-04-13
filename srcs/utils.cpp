@@ -6,7 +6,7 @@
 /*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 14:22:35 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/04/10 20:48:52 by bsafi            ###   ########.fr       */
+/*   Updated: 2025/04/12 18:38:18 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,12 @@ std::string	catParam(std::deque<std::string> cmd, int start){
 				param += cmd[i];
 	}
 	return (param);
+}
+
+std::string longToString(long value){
+    std::ostringstream oss;
+    oss << value;
+    return (oss.str());
 }
 
 bool	isnumber(std::string s){

@@ -4,16 +4,24 @@ void	Server::KICK(int fd, std::deque<std::string> cmd){
 	std::string reason;
 	size_t	size = cmd.size();
 
-	if (_clients[fd]->getNickName().empty() || _clients[fd]->getUserName().empty()){
-		mysend(fd, "You need to register first. Use NICK <nickname> then USER <username>.\r\n");
+	if (_clients[fd]->getNickName().empty()){
+		mysend(fd, ":server 451 * :You have not registered\r\n");
+		return ;
+	}
+	if (_clients[fd]->getUserName().empty()){
+		mysend(fd, ":server 451 " + _clients[fd]->getNickName() +  " :You have not registered\r\n");
 		return ;
 	}
 	if (size < 2){
-		mysend(fd, "Usage: KICK <channel> <nick> [reason], kicks the nick from the current channel (needs chanop)\r\n");
+		mysend(fd, ":server 461 " + _clients[fd]->getNickName() +  " " + cmd[0] + " :Not enough parameters\r\n");
 		return ;
 	}
 	if (_channels.find(cmd[1]) == _channels.end()){
-		mysend(fd, "No such channel.\r\n");
+		mysend(fd, ":serveur 403 " + _clients[fd]->getNickName() + " " + cmd[1] + " :No such channel\r\n");
+		return ;
+	}
+	if (findUser(cmd[1], _clients[fd]->getNickName()) == false){
+		mysend(fd, ":serveur 442 " + _clients[fd]->getNickName() + " " + cmd[1] + " :You're not on that channel\r\n");
 		return ;
 	}
 	if (_channels[cmd[1]]->isOp(fd) == false){

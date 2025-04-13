@@ -6,9 +6,11 @@
 /*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/10 20:49:19 by bsafi            ###   ########.fr       */
+/*   Updated: 2025/04/12 18:50:33 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+
 
 
 #pragma once
@@ -38,6 +40,7 @@ class Server {
 			_cmds["PASS"] = &Server::PASS;
 			_cmds["NICK"] = &Server::NICK;
 			_cmds["USER"] = &Server::USER;
+			_cmds["user"] = &Server::USER;
 			_cmds["KICK"] = &Server::KICK;
 			_cmds["INVITE"] = &Server::INVITE;
 			_cmds["TOPIC"] = &Server::TOPIC;
@@ -52,7 +55,7 @@ class Server {
 		void	printmap();
 		void	eraseClient(int fd);
 		void 	checkPassword(int fd);
-		void	handleCmd(std::string buff, std::deque<std::string> cmd, int fd);
+		void	handleCmd(std::deque<std::string> cmd, int fd);
 		void	get_info(int fd, std::deque<std::string> cmd);
 		void	intro(int clientfd);
 		ssize_t	mysend(int fd, std::string msg);
@@ -85,4 +88,5 @@ class Server {
 std::deque<std::string>	split(std::string buff, std::string sep);
 std::string trim(std::string str);
 std::string	catParam(std::deque<std::string> cmd, int start);
+std::string longToString(long value);
 bool		isnumber(std::string s);

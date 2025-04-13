@@ -59,3 +59,19 @@ void		Channel::setTopicRestrict(bool val){
 bool		Channel::getTopicRestrict(){
 	return (_isTopicRestrict);
 }
+
+void	Channel::setTime(){
+	_timestamp = std::time(NULL);
+}
+
+std::time_t	Channel::getTime() const{
+	return (_timestamp);
+}
+
+void		Channel::setTopic(std::string topic){
+	_topic = topic;
+}
+
+std::string	Channel::getTopic() const{
+	return (_topic);
+}
