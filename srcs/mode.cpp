@@ -199,11 +199,13 @@ void Server::MODEl(int fd, std::deque<std::string> cmd)
 			return;
 		}
 		it->second->setLimitUser(atoi(cmd[3].c_str()));
+		it->second->setisLimitUser(true);
 		msg =  ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " MODE " + cmd[1] + " " + cmd[2] + " " + cmd[3] + "\r\n";
 		send(fd, msg.c_str(), msg.length(), 0);
 	}
 	else if (cmd[2] == "-l"){
 		it->second->setLimitUser(INT_MAX);
+		it->second->setisLimitUser(false);
 		msg =  ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " MODE " + cmd[1] + " " + cmd[2] + "\r\n";
 		send(fd, msg.c_str(), msg.length(), 0);
 	}

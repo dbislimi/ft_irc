@@ -27,6 +27,7 @@ class Channel {
 		bool				_ismdp;
 		std::string			_mdp;
 		int					_limitUser;
+		bool				_isLimitUser;
 		bool				_isTopicRestrict;
 
 	public:
@@ -48,6 +49,8 @@ class Channel {
 		void		setIsmdp(bool val);
 		int 		getLimitUser();
 		void		setLimitUser(int val);
+		bool		getisLimitUser();
+		void		setisLimitUser(bool val);
 		bool		getTopicRestrict();
 		void		setTopicRestrict(bool val);
 };

@@ -75,3 +75,11 @@ void		Channel::setTopic(std::string topic){
 std::string	Channel::getTopic() const{
 	return (_topic);
 }
+
+bool		Channel::getisLimitUser(){
+	return _isLimitUser;
+}
+
+void		Channel::setisLimitUser(bool val){
+	_isLimitUser = val;
+}
