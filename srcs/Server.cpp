@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/12 16:12:08 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/14 14:54:49 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,4 +237,12 @@ void Server::printmap()
 		std::cout << "[" << it->first << "] = " << it->second->getIp() << std::endl;
 	}
 	std::cout << std::endl;
+}
+
+int	Server::findFd(std::string nick){
+	for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); ++it){
+		if (it->second->getNickName() == nick)
+			return (it->first);
+	}
+	return (0);
 }

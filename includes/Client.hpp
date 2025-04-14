@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/12 16:37:03 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/14 15:24:00 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ class Client {
 		std::string _userName;
 		std::string _nickName;
 		std::string	_tempNick;
-		std::string	_channel;
 		Server*		_server;
 		std::string	_to_cat;
 
@@ -54,9 +53,6 @@ class Client {
 		void setTempNick(std::string nick);
 		void setIpAdd(struct in_addr addr);
 		const std::string&	getIp() const;
-		void welcomeMsg();
-		void	setChannel(std::string& name);
-		std::string	getChannel() const;
 		std::string	getCat() const;
 		std::string cat(std::string buff);
 		void		clearCat();

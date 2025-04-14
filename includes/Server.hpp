@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/12 16:34:02 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/14 15:22:41 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ class Server {
 			_cmds["PASS"] = &Server::PASS;
 			_cmds["NICK"] = &Server::NICK;
 			_cmds["USER"] = &Server::USER;
-			_cmds["user"] = &Server::USER;
 			_cmds["KICK"] = &Server::KICK;
 			_cmds["INVITE"] = &Server::INVITE;
 			_cmds["TOPIC"] = &Server::TOPIC;
@@ -76,6 +75,7 @@ class Server {
 		bool checkClient(std::string value);
 		void sendChannel(int fd, std::string channel_name, std::string msg);
 		bool findUser(std::string channel_name, std::string nick);
+		int	findFd(std::string nick);
 };
 	
 std::deque<std::string>	split(std::string buff, std::string sep);
