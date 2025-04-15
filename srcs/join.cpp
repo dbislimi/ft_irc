@@ -58,7 +58,6 @@ void Server::JOIN(int fd, std::deque<std::string> cmd)
 		mysend(fd, ":server 451 " + _clients[fd]->getNickName() +  " :You have not registered\r\n");
 		return ;
 	}
-
 	if (cmd.size() == 1){
 		mysend(fd, ":server 461 " + _clients[fd]->getNickName() +  " " + cmd[0] + " :Not enough parameters\r\n");
 		return ;

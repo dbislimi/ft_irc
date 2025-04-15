@@ -35,7 +35,27 @@ void	Server::KICK(int fd, std::deque<std::string> cmd){
 	reason = catParam(cmd, 3);
 	if (reason.empty())
 		reason = ":" + _clients[fd]->getNickName();
-	sendChannel(-1, cmd[1], ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " KICK " + cmd[1] + " " + cmd[2] + " " + reason + "\r\n");
-	_channels[cmd[1]]->removeOp((_nbCliChannel[cmd[1]].find(cmd[2]))->second);
-	_nbCliChannel[cmd[1]].erase(cmd[2]);
+	deleteFromChannel(fd, cmd[1], cmd, reason);
+}
+
+void	Server::deleteFromChannel(int fd, std::string channel, std::deque<std::string> cmd, std::string reason){
+	std::string msg;
+	int	fd_leaving;
+
+	if (cmd[0] == "KICK"){
+		msg = ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " " + cmd[0] + " " + channel + " " + cmd[2] + " " + reason + "\r\n";
+		fd_leaving = (_nbCliChannel[channel].find(cmd[2]))->second;
+	}
+	else{
+		msg = ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " " + cmd[0] + " " + channel + " " + reason + "\r\n";
+		fd_leaving = fd;
+	}
+	sendChannel(-1, channel, msg);	
+	_channels[channel]->removeOp(fd_leaving);
+	_nbCliChannel[channel].erase(_clients[fd_leaving]->getNickName());
+	if (_nbCliChannel[channel].size() == 0){
+		_nbCliChannel.erase(channel);
+		delete _channels[channel];
+		_channels.erase(channel);
+	}
 }

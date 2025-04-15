@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/14 15:22:41 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/15 18:15:23 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,10 @@ class Server {
 		ssize_t	mysend(int fd, std::string msg);
 
 		void	JOIN(int fd, std::deque<std::string> cmd);
-		void	PART(int fd, std::deque<std::string> cmd);
 		void	USER(int fd, std::deque<std::string> cmd);
 		void	NICK(int fd, std::deque<std::string> cmd);
 		void	KICK(int fd, std::deque<std::string> cmd);
+		void	PART(int fd, std::deque<std::string> cmd);
 		void	INVITE(int fd, std::deque<std::string> cmd);
 		void	TOPIC(int fd, std::deque<std::string> cmd);
 		void	MODE(int fd, std::deque<std::string> cmd);
@@ -69,6 +69,7 @@ class Server {
 		void	PASS(int fd, std::deque<std::string> cmd);
 		void	PRIVMSG(int fd, std::deque<std::string> cmd);
 		
+		void deleteFromChannel(int fd, std::string channel, std::deque<std::string> cmd, std::string reason);
 		void createChannel(int op, std::string value);
 		void joinChannel(std::string value, int fd);
 		bool checkChannel(std::string value);
