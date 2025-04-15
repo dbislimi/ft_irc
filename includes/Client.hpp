@@ -6,7 +6,7 @@
 /*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/09 15:45:45 by dravaono         ###   ########.fr       */
+/*   Updated: 2025/04/10 17:04:40 by dravaono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,10 @@ class Client {
 		bool _isSigned;
 		bool _allName;
 		bool _isOps;
-		bool	_nick;
+		bool _nick;
+		bool _isInvited;
 		int _fd;
+		std::map<std::string, bool> _invitedOn;
 		std::string		_ip;
 		struct in_addr	addr;
 		std::string _userName;
@@ -35,16 +37,10 @@ class Client {
 	public:
 		Client(Server* server): _isConnected(false), _isRegistered(false), _nick(false), _server(server){}
 		~Client(){std::cout << "Client <" << _fd << "> disconnected." << std::endl;}
-		bool getSign();
-		bool getBoolName();
-		bool getBoolNick();
-		void setBoolNick();
 		bool getRegister();
+		bool getIsInvited();
+		void setIsInvited(bool isInvited);
 		void setRegister();
-		void setBoolOps(bool isOps);
-		bool getBoolOps();
-		void setSign(bool isSigned);
-		void setBoolName(bool allName);
 		bool	isConnected() const;
 		void	connect();
 		void setFd(int fd);
@@ -59,6 +55,7 @@ class Client {
 		const std::string&	getIp() const;
 		void welcomeMsg();
 		void	setChannel(std::string& name);
+		void statusInvit(std::string channel);
 		std::string	getChannel() const;
 		std::string	getCat() const;
 		std::string cat(std::string buff);

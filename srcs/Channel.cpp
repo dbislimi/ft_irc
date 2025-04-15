@@ -19,3 +19,11 @@ void	Channel::removeOp(int fd){
 void    Channel::addOp(int fd){
     _ops.push_back(fd);
 }
+
+void Channel::setChannelOnInvited(bool channelOnInvited){
+    this->_channelOnInvited = channelOnInvited;
+}
+
+bool Channel::getChannelOnInvited(){
+    return this->_channelOnInvited;
+}

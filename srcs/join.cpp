@@ -50,6 +50,7 @@ void Server::createChannel(int op, std::string value)
 {
 	Channel *channel = new Channel(op, value);
 	_channels.insert(std::pair<std::string, Channel *>(value, channel));
+	
 }
 
 void Server::JOIN(int fd, std::deque<std::string> cmd)
@@ -65,6 +66,24 @@ void Server::JOIN(int fd, std::deque<std::string> cmd)
 	{
 		if (!checkChannel(cmd[1]))
 			createChannel(fd, cmd[1]);
+		if (channelIsInviteOnly(cmd[1])){
+			mysend(fd, ":serveur 473 :Cannot join channel(+i)\r\n");
+			return;
+		}
+		if (!channelWithPassword(cmd[1])){
+			mysend(fd, ":serveur 475 :Cannot join channel(incorrect channel key)\r\n");
+			return;
+		}
+		if (!channelWithUserRestrict(cmd[1])){
+			mysend(fd, "serveur 471 :Cannot join channel :Channel is full\r\n");
+			return;
+		}
 		joinChannel(cmd[1], fd);
 	}
+}
+
+bool Server::channelIsInviteOnly(std::string value){
+	std::map<std::string, Channel *>::iterator it = _channels.find(value);
+	if (!it->second->getChannelOnInvited())
+
 }

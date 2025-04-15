@@ -6,7 +6,7 @@
 /*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/09 18:11:25 by dravaono         ###   ########.fr       */
+/*   Updated: 2025/04/10 15:55:03 by dravaono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,11 @@ class Server {
 		bool checkClient(std::string value);
 		void sendChannel(int fd, std::string channel_name, std::string msg);
 		bool findUser(std::string channel_name, std::string nick);
+
+
+		bool channelIsInviteOnly(std::string value);
+		bool channelWithPassword(std::string value);
+		bool channelWithUserRestrict(std::string value);
 };
 	
 std::deque<std::string>	split(std::string buff, std::string sep);

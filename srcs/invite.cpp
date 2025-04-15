@@ -1,7 +1,10 @@
 #include "../includes/all.hpp"
 
 void	Server::INVITE(int fd, std::deque<std::string> cmd){
-	std::cout << "FUNCT INVIT" << std::endl;
+	if (!_channels[cmd[2]]->isOp(fd)){
+		mysend(fd, ":serveur 482 " + _clients[fd]->getNickName() + " " + cmd[1] + " :Permission Denied- You're not an IRC operator\r\n");
+		return ;
+	}
 	if (cmd.size() != 3){
 		mysend(fd, "Usage: INVITE <nick> [<channel>], invites someone to a channel, by default the current channel\r\n");
 		return ;
@@ -26,6 +29,7 @@ void	Server::INVITE(int fd, std::deque<std::string> cmd){
 			break;
 		it++;
 	}
+	
 	mysend(it->second->getFd(), "You have been invited to \00306" + cmd[2] + "\003 by \00302" + ot->second->getNickName() + "\003\r\n");
 	mysend(fd, "You've invited \00302" + it->second->getNickName() + "\003 to \00306" + cmd[2] + "\003\r\n");
 }

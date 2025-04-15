@@ -6,7 +6,7 @@
 /*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/09 18:14:59 by dravaono         ###   ########.fr       */
+/*   Updated: 2025/04/10 16:36:47 by dravaono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,10 +85,10 @@ void Server::newClient(){
 	poll.events = POLLIN;
 	poll.revents = 0;
 	clicli->setFd(clientfd);
-	clicli->setSign(false);
-	clicli->setBoolName(false);
-	clicli->setBoolOps(false);
-	// std::cout << "IP = " << clicli->getFd() << std::endl;
+	// clicli->setSign(false);
+	// clicli->setBoolName(false);
+	// clicli->setBoolOps(false);
+	
 	clicli->setIpAdd(sa.sin_addr);
 	_clients.insert(std::pair<int, Client *>(clientfd, clicli));
 	_fds.push_back(poll);
@@ -122,11 +122,6 @@ void Server::newCmd(int fd)
 			continue ;
 		handleCmd(buff, split((*it), " \t\r\n"), fd);
 	}
-	// if (!_clients[fd]->getNickName().empty() && !_clients[fd]->getUserName().empty()){
-	// 	mysend(fd, ":server 001 " + _clients[fd]->getNickName() +  " :Welcome to the ft_irc Network " + _clients[fd]->getNickName() + "!" +_clients[fd]->getUserName() +"@" +_clients[fd]->getIp() + "\r\n");
-	// 	mysend(fd, ":server 002 " + _clients[fd]->getNickName() +  " :Your host is " +_clients[fd]->getIp() +", running version ft_irc-1.0\r\n");
-	// 	mysend(fd, ":server 003 " + _clients[fd]->getNickName() +  " :This server was created Apr  2 2025 14:48:02");
-	// }
 }
 
 Server::~Server()
