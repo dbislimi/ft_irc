@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/16 12:58:28 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/16 15:19:32 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,13 @@ class Client {
 		bool	_nick;
 		int _fd;
 		std::string		_ip;
-		struct in_addr	addr;
+		// struct in_addr	addr;
 		std::string _userName;
 		std::string _nickName;
 		std::string	_tempNick;
 		Server*		_server;
 		std::string	_to_cat;
-		bool 		_isopps;
+		// bool 		_isopps;
 
 	public:
 		Client(Server* server): _isConnected(false), _nick(false), _server(server){}

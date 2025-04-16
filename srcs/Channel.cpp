@@ -44,11 +44,11 @@ void		Channel::setIsmdp(bool val){
 	_ismdp = val;
 }
 
-int			Channel::getLimitUser(){
+size_t			Channel::getLimitUser(){
 	return _limitUser;
 }
 
-void		Channel::setLimitUser(int val){
+void		Channel::setLimitUser(size_t val){
 	_limitUser = val;
 }
 
@@ -82,4 +82,40 @@ bool		Channel::getisLimitUser(){
 
 void		Channel::setisLimitUser(bool val){
 	_isLimitUser = val;
+}
+
+void		Channel::updateModes(std::deque<std::string> cmd){
+	char mode = cmd[2][1];
+
+	if (cmd[1][0] == '+')
+		_modes.push_back(mode);
+	else{
+		size_t pos = _modes.find(mode);
+		if (pos != std::string::npos)
+			_modes.erase(pos, 1);
+	}
+}
+
+std::string	Channel::getModes(){
+	std::string str = "";
+	bool		k = 0;
+	bool		l = 0;
+
+	for (size_t i = 0; i < _modes.size(); ++i){
+		if (_modes[i] == 'k')
+			k = 1;
+		else if (_modes[i] == 'l')
+			l = 1;
+		else
+			str += _modes[i];
+	}
+	if (l)
+		str += "l";
+	if (k)
+		str += 'k';
+	if (l)
+		str += " " + longToString(_limitUser);
+	if (k)
+		str += " " + _mdp;
+	return (str);
 }

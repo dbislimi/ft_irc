@@ -8,38 +8,10 @@ bool Server::checkChannel(std::string value)
 	return true;
 }
 
-void Server::joinChannel(std::string value, int fd)
+void Server::joinChannel(std::string channel, int fd)
 {
-	_nbCliChannel[value].insert(std::pair<std::string, int>(_clients[fd]->getNickName(), fd));
-	std::string msg = ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " JOIN " + value + "\r\n";
-	send(fd, msg.c_str(), msg.length(), 0);
-	msg = ":" + _name + " 353 " + _clients[fd]->getNickName() + " = " + value + " :";
-	for (std::map<std::string, int>::iterator it = _nbCliChannel[value].begin(); it != _nbCliChannel[value].end(); ++it)
-	{
-        if (_channels[value]->isOp(it->second)) {
-            msg += "@" + _clients[it->second]->getNickName() + " ";
-        } else {
-            msg += _clients[it->second]->getNickName() + " ";
-        }
-	}
-	msg += "\r\n";
-    send(fd, msg.c_str(), msg.length(), 0);
-    msg = ":" + _name +  " 366 " + _clients[fd]->getNickName() + " " + value + " :End of /NAMES list.\r\n";
-    send(fd, msg.c_str(), msg.length(), 0);
-    msg = ":" + _name +  " 324 " + _clients[fd]->getNickName() + " " + value + " :+nt\r\n";
-    send(fd, msg.c_str(), msg.length(), 0);
-    msg = ":" + _name +  " 329 " + _clients[fd]->getNickName() + " " + value + " :1743783418\r\n"; 
-    send(fd, msg.c_str(), msg.length(), 0);
-    msg = ":" + _name +  " 354 " + _clients[fd]->getNickName() + " 152 " + value + " " + _clients[fd]->getNickName() + " " + _clients[fd]->getIp() + "\r\n";
-    send(fd, msg.c_str(), msg.length(), 0);
-	for (std::map<std::string, int>::iterator it = _nbCliChannel[value].begin(); it != _nbCliChannel[value].end(); ++it)
-	{
-		if (it->second != fd)
-		{
-			msg = ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " JOIN " + value + "\r\n";
-			send(it->second, msg.c_str(), msg.length(), 0);
-		}
-	}
+	_nbCliChannel[channel].insert(std::pair<std::string, int>(_clients[fd]->getNickName(), fd));
+	sendChannel(-1, channel, ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " JOIN " + channel + "\r\n");
 }
 
 void Server::createChannel(int op, std::string value)
@@ -55,6 +27,9 @@ void Server::createChannel(int op, std::string value)
 
 void Server::JOIN(int fd, std::deque<std::string> cmd)
 {
+	std::deque<std::string>	channels;
+	std::deque<std::string>	keys;
+
 	if (_clients[fd]->getNickName().empty()){
 		mysend(fd, ":server 451 * :You have not registered\r\n");
 		return ;
@@ -67,21 +42,23 @@ void Server::JOIN(int fd, std::deque<std::string> cmd)
 		mysend(fd, ":server 461 " + _clients[fd]->getNickName() +  " " + cmd[0] + " :Not enough parameters\r\n");
 		return ;
 	}
-	std::string msg = ":No such channel\r\n";
-	if (cmd[1][0] != '#')
-		send(fd, msg.c_str(), msg.length(), 0);
-	else
-	{
-	if (!checkChannel(cmd[1]))
-		createChannel(fd, cmd[1]);
-	if (_channels[cmd[1]]->getIsmdp() == true && (cmd.size() <= 2 || cmd[3] != _channels[cmd[1]]->getMdp())){
-		mysend(fd, "check le msg d'erreur");
-		return;
-	}
-	if (_channels[cmd[1]]->getisLimitUser() == true && (cmd.size() <= 2 || _nbCliChannel[cmd[1]].size() >= _channels[cmd[1]]->getLimitUser())){
-		mysend(fd, "check le msg d'erreur");
-		return;
-	}
-	joinChannel(cmd[1], fd);
+	channels = split(cmd[1], ",");
+	keys = split(cmd[2], ",");
+	for (size_t	i = 0; i < channels.size(); ++i){
+		if ((*(channels.begin() + i))[0] != '#')
+			mysend(fd, ":server 403 " + _clients[fd]->getNickName() +  " " + *(channels.begin() + i) + " :No such channel\r\n");
+		else{
+			if (!checkChannel(*(channels.begin() + i)))
+				createChannel(fd, *(channels.begin() + i));
+			if (_channels[*(channels.begin() + i)]->getIsmdp() == true && (cmd.size() <= 2 || i >= keys.size() || *(keys.begin() + i) != _channels[*(channels.begin() + i)]->getMdp())){
+				mysend(fd, ":server 475 " + _clients[fd]->getNickName() +  " " + *(channels.begin() + i) + " :Cannot join channel (+k)\r\n");
+				return;
+			}
+			if (_channels[*(channels.begin() + i)]->getisLimitUser() == true && _nbCliChannel[*(channels.begin() + i)].size() >= _channels[*(channels.begin() + i)]->getLimitUser()){
+				mysend(fd, ":server 471 " + _clients[fd]->getNickName() +  " " + *(channels.begin() + i) + " :Cannot join channel (+l)\r\n");
+				return;
+			}
+			joinChannel(*(channels.begin() + i), fd);
+		}
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/16 12:58:36 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/16 18:47:22 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ class Server {
 			_cmds["TOPIC"] = &Server::TOPIC;
 			_cmds["MODE"] = &Server::MODE;
 			_cmds["PRIVMSG"] = &Server::PRIVMSG;
+			_cmds["WHO"] = &Server::WHO;
 		} 
 		~Server();
 		static void signals(int signum);
@@ -67,14 +68,16 @@ class Server {
 		void	INVITE(int fd, std::deque<std::string> cmd);
 		void	TOPIC(int fd, std::deque<std::string> cmd);
 		void	MODE(int fd, std::deque<std::string> cmd);
-		void	MODEi(int fd, std::deque<std::string> cmd);
-		void	MODEt(int fd, std::deque<std::string> cmd);
-		void	MODEk(int fd, std::deque<std::string> cmd);
-		void	MODEo(int fd, std::deque<std::string> cmd);
-		void	MODEl(int fd, std::deque<std::string> cmd);
+		bool	MODEi(int fd, std::deque<std::string> cmd, Channel* channel);
+		bool	MODEt(int fd, std::deque<std::string> cmd, Channel* channel);
+		bool	MODEk(int fd, std::deque<std::string> cmd, Channel* channel);
+		bool	MODEo(int fd, std::deque<std::string> cmd, Channel* channel);
+		bool	MODEl(int fd, std::deque<std::string> cmd, Channel* channel);
 		void	QUIT(int fd, std::deque<std::string> cmd);
 		void	PASS(int fd, std::deque<std::string> cmd);
 		void	PRIVMSG(int fd, std::deque<std::string> cmd);
+		void	WHO(int fd, std::deque<std::string> cmd);
+
 		
 		void deleteFromChannel(int fd, std::string channel, std::deque<std::string> cmd, std::string reason);
 		void createChannel(int op, std::string value);

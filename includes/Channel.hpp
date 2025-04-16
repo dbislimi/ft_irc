@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/12 18:47:59 by bsafi            ###   ########.fr       */
+/*   Updated: 2025/04/16 16:22:29 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,11 @@ class Channel {
 		bool				_invitRestrict;
 		bool				_ismdp;
 		std::string			_mdp;
-		int					_limitUser;
+		size_t				_limitUser;
 		bool				_isLimitUser;
 		bool				_isTopicRestrict;
-
+		std::string			_modes;
+		
 	public:
 		Channel(int op, const std::string& name): _name(name){_ops.push_back(op);}
 
@@ -47,10 +48,12 @@ class Channel {
 		void		setMdp(std::string word);
 		bool		getIsmdp();
 		void		setIsmdp(bool val);
-		int 		getLimitUser();
-		void		setLimitUser(int val);
+		size_t 		getLimitUser();
+		void		setLimitUser(size_t val);
 		bool		getisLimitUser();
 		void		setisLimitUser(bool val);
 		bool		getTopicRestrict();
 		void		setTopicRestrict(bool val);
+		void		updateModes(std::deque<std::string> cmd);
+		std::string	getModes();
 };
