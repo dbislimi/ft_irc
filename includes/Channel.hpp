@@ -3,12 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/13 16:40:16 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/04/09 20:41:02 by dbislimi         ###   ########.fr       */
+/*   Created: Invalid date        by                   #+#    #+#             */
+/*   Updated: 2025/04/12 18:47:59 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+
+
 
 #pragma once
 
@@ -20,6 +23,12 @@ class Channel {
 		std::string			_topic;
 		std::time_t			_timestamp;
 		std::deque<int>		_ops;
+		bool				_invitRestrict;
+		bool				_ismdp;
+		std::string			_mdp;
+		int					_limitUser;
+		bool				_isLimitUser;
+		bool				_isTopicRestrict;
 
 	public:
 		Channel(int op, const std::string& name): _name(name){_ops.push_back(op);}
@@ -32,4 +41,16 @@ class Channel {
 		std::string	getTopic() const;
 		void		setTime();
 		std::time_t	getTime() const;
+		bool 		getInvitRestrict();
+		void		setInvitRestrict(bool val);
+		std::string getMdp();
+		void		setMdp(std::string word);
+		bool		getIsmdp();
+		void		setIsmdp(bool val);
+		int 		getLimitUser();
+		void		setLimitUser(int val);
+		bool		getisLimitUser();
+		void		setisLimitUser(bool val);
+		bool		getTopicRestrict();
+		void		setTopicRestrict(bool val);
 };

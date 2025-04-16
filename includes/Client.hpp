@@ -6,9 +6,10 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/14 15:24:00 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/16 12:58:28 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #pragma once
 
@@ -29,6 +30,7 @@ class Client {
 		std::string	_tempNick;
 		Server*		_server;
 		std::string	_to_cat;
+		bool 		_isopps;
 
 	public:
 		Client(Server* server): _isConnected(false), _nick(false), _server(server){}
@@ -56,4 +58,6 @@ class Client {
 		std::string	getCat() const;
 		std::string cat(std::string buff);
 		void		clearCat();
+		//bool		getIsopps();
+		//void		setIsopps(bool v);
 };

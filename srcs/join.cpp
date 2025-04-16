@@ -46,6 +46,11 @@ void Server::createChannel(int op, std::string value)
 {
 	Channel *channel = new Channel(op, value);
 	_channels.insert(std::pair<std::string, Channel *>(value, channel));
+	channel->setInvitRestrict(false);
+	channel->setIsmdp(false);
+	channel->setTopicRestrict(true);
+	channel->setisLimitUser(false);
+	_clients[op]->setBoolOps(true);
 }
 
 void Server::JOIN(int fd, std::deque<std::string> cmd)
@@ -62,13 +67,21 @@ void Server::JOIN(int fd, std::deque<std::string> cmd)
 		mysend(fd, ":server 461 " + _clients[fd]->getNickName() +  " " + cmd[0] + " :Not enough parameters\r\n");
 		return ;
 	}
-	std::string msg = "Please add # after /join\r\n";
+	std::string msg = ":No such channel\r\n";
 	if (cmd[1][0] != '#')
 		send(fd, msg.c_str(), msg.length(), 0);
 	else
 	{
-		if (!checkChannel(cmd[1]))
-			createChannel(fd, cmd[1]);
-		joinChannel(cmd[1], fd);
+	if (!checkChannel(cmd[1]))
+		createChannel(fd, cmd[1]);
+	if (_channels[cmd[1]]->getIsmdp() == true && (cmd.size() <= 2 || cmd[3] != _channels[cmd[1]]->getMdp())){
+		mysend(fd, "check le msg d'erreur");
+		return;
+	}
+	if (_channels[cmd[1]]->getisLimitUser() == true && (cmd.size() <= 2 || _nbCliChannel[cmd[1]].size() >= _channels[cmd[1]]->getLimitUser())){
+		mysend(fd, "check le msg d'erreur");
+		return;
+	}
+	joinChannel(cmd[1], fd);
 	}
 }

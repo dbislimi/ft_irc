@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 14:22:35 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/04/09 20:59:49 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/12 18:38:18 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,4 +52,13 @@ std::string longToString(long value){
     std::ostringstream oss;
     oss << value;
     return (oss.str());
+}
+
+bool	isnumber(std::string s){
+	int i = -1;
+	while (s[++i]){
+		if (!(std::isdigit(s[i])))
+			return false;
+	}
+	return true;
 }

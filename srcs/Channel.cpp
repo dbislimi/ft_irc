@@ -20,12 +20,44 @@ void    Channel::addOp(int fd){
     _ops.push_back(fd);
 }
 
-void		Channel::setTopic(std::string topic){
-	_topic = topic;
+bool	Channel::getInvitRestrict(){
+	return(_invitRestrict);
 }
 
-std::string	Channel::getTopic() const{
-	return (_topic);
+void	Channel::setInvitRestrict(bool value){
+	_invitRestrict = value;
+}
+
+std::string	Channel::getMdp(){
+	return (_mdp);
+}
+
+void	Channel::setMdp(std::string w){
+	_mdp = w;
+}
+
+bool		Channel::getIsmdp(){
+	return _ismdp;
+}
+
+void		Channel::setIsmdp(bool val){
+	_ismdp = val;
+}
+
+int			Channel::getLimitUser(){
+	return _limitUser;
+}
+
+void		Channel::setLimitUser(int val){
+	_limitUser = val;
+}
+
+void		Channel::setTopicRestrict(bool val){
+	_isTopicRestrict = val;
+}
+
+bool		Channel::getTopicRestrict(){
+	return (_isTopicRestrict);
 }
 
 void	Channel::setTime(){
@@ -34,4 +66,20 @@ void	Channel::setTime(){
 
 std::time_t	Channel::getTime() const{
 	return (_timestamp);
+}
+
+void		Channel::setTopic(std::string topic){
+	_topic = topic;
+}
+
+std::string	Channel::getTopic() const{
+	return (_topic);
+}
+
+bool		Channel::getisLimitUser(){
+	return _isLimitUser;
+}
+
+void		Channel::setisLimitUser(bool val){
+	_isLimitUser = val;
 }

@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/15 16:48:14 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/16 12:59:16 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,8 +144,9 @@ void Server::handleCmd(std::deque<std::string> cmd, int fd)
 	if (it != _cmds.end()){
 		if (it->first == "PASS")
 			PASS(fd, cmd);
-		else if (it->first == "QUIT" || _clients[fd]->isConnected())
+		else if (it->first == "QUIT" || _clients[fd]->isConnected()){
 			(this->*(it->second))(fd, cmd);
+		}
 		return ;
 	}
 	for (int i = 0; i < 3; ++i)

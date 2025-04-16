@@ -70,6 +70,18 @@ void Client::setBoolOps(bool isOps){
     this->_isOps = isOps;
 }
 
+bool Client::getBoolOps(){
+    return _isOps;
+}
+
+
+void	Client::setChannel(std::string& name){
+    this->_channel = name;
+}
+std::string	Client::getChannel() const{
+    return (_channel);
+}
+
 std::string    Client::getCat() const{
     return (_to_cat);
 }
@@ -93,3 +105,11 @@ bool Client::getBoolNick(){
 void Client::setBoolNick(){
     _nick = true;
 }
+
+/*bool Client::getIsopps(){
+    return _isopps;
+}
+
+void Client::setIsopps(bool val){
+    _isopps = val;
+}*/

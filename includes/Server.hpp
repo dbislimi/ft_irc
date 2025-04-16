@@ -6,9 +6,11 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/15 18:15:23 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/16 12:58:36 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+
 
 
 #pragma once
@@ -65,6 +67,11 @@ class Server {
 		void	INVITE(int fd, std::deque<std::string> cmd);
 		void	TOPIC(int fd, std::deque<std::string> cmd);
 		void	MODE(int fd, std::deque<std::string> cmd);
+		void	MODEi(int fd, std::deque<std::string> cmd);
+		void	MODEt(int fd, std::deque<std::string> cmd);
+		void	MODEk(int fd, std::deque<std::string> cmd);
+		void	MODEo(int fd, std::deque<std::string> cmd);
+		void	MODEl(int fd, std::deque<std::string> cmd);
 		void	QUIT(int fd, std::deque<std::string> cmd);
 		void	PASS(int fd, std::deque<std::string> cmd);
 		void	PRIVMSG(int fd, std::deque<std::string> cmd);
@@ -83,3 +90,4 @@ std::deque<std::string>	split(std::string buff, std::string sep);
 std::string trim(std::string str);
 std::string	catParam(std::deque<std::string> cmd, int start);
 std::string longToString(long value);
+bool		isnumber(std::string s);

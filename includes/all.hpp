@@ -20,6 +20,7 @@
 # include <map>
 # include <set>
 # include <deque>
+# define INT_MAX 2147483647
 # define BACKLOG 10 // nombre max de demandes de connexion
 
 #define BLD std::string("\002")  // Bold (Gras)
