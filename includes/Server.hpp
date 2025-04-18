@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/18 16:08:28 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/18 17:03:40 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ class Server {
 		void sendChannel(int fd, std::string channel_name, std::string msg);
 		bool findUser(std::string channel_name, std::string nick);
 		int	findFd(std::string nick);
+		bool isCorrectNick(std::string nick);
 };
 	
 std::deque<std::string>	split(std::string buff, std::string sep);
@@ -94,3 +95,4 @@ std::string trim(std::string str);
 std::string	catParam(std::deque<std::string> cmd, int start);
 std::string longToString(long value);
 bool		isnumber(std::string s);
+bool		isSpecialChar(char c);

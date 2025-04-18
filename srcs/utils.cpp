@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 14:22:35 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/04/12 18:38:18 by bsafi            ###   ########.fr       */
+/*   Updated: 2025/04/18 17:02:45 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,4 +61,8 @@ bool	isnumber(std::string s){
 			return false;
 	}
 	return true;
+}
+
+bool	isSpecialChar(char c){
+	return (strchr("[]\\`_^{|}", c) != NULL);
 }
