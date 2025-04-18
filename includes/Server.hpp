@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/16 18:47:22 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/18 16:08:28 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ class Server {
 			_cmds["TOPIC"] = &Server::TOPIC;
 			_cmds["MODE"] = &Server::MODE;
 			_cmds["PRIVMSG"] = &Server::PRIVMSG;
-			_cmds["WHO"] = &Server::WHO;
+			_cmds["NAMES"] = &Server::NAMES;
 		} 
 		~Server();
 		static void signals(int signum);
@@ -76,7 +76,7 @@ class Server {
 		void	QUIT(int fd, std::deque<std::string> cmd);
 		void	PASS(int fd, std::deque<std::string> cmd);
 		void	PRIVMSG(int fd, std::deque<std::string> cmd);
-		void	WHO(int fd, std::deque<std::string> cmd);
+		void	NAMES(int fd, std::deque<std::string> cmd);
 
 		
 		void deleteFromChannel(int fd, std::string channel, std::deque<std::string> cmd, std::string reason);

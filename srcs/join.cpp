@@ -52,13 +52,14 @@ void Server::JOIN(int fd, std::deque<std::string> cmd)
 				createChannel(fd, *(channels.begin() + i));
 			if (_channels[*(channels.begin() + i)]->getIsmdp() == true && (cmd.size() <= 2 || i >= keys.size() || *(keys.begin() + i) != _channels[*(channels.begin() + i)]->getMdp())){
 				mysend(fd, ":server 475 " + _clients[fd]->getNickName() +  " " + *(channels.begin() + i) + " :Cannot join channel (+k)\r\n");
-				return;
+				continue ;
 			}
 			if (_channels[*(channels.begin() + i)]->getisLimitUser() == true && _nbCliChannel[*(channels.begin() + i)].size() >= _channels[*(channels.begin() + i)]->getLimitUser()){
 				mysend(fd, ":server 471 " + _clients[fd]->getNickName() +  " " + *(channels.begin() + i) + " :Cannot join channel (+l)\r\n");
-				return;
+				continue ;
 			}
 			joinChannel(*(channels.begin() + i), fd);
+			NAMES(fd, cmd);
 		}
 	}
 }

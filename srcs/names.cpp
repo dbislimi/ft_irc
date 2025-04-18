@@ -1,6 +1,6 @@
 #include "../includes/all.hpp"
 
-void Server::WHO(int fd, std::deque<std::string> cmd){
+void Server::NAMES(int fd, std::deque<std::string> cmd){
 	std::string msg;
 	std::deque<std::string> channels;
 	if (cmd.size() < 1){

@@ -87,7 +87,7 @@ void		Channel::setisLimitUser(bool val){
 void		Channel::updateModes(std::deque<std::string> cmd){
 	char mode = cmd[2][1];
 
-	if (cmd[1][0] == '+')
+	if (cmd[2][0] == '+')
 		_modes.push_back(mode);
 	else{
 		size_t pos = _modes.find(mode);
