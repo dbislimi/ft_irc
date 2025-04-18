@@ -10,8 +10,20 @@ bool Server::checkChannel(std::string value)
 
 void Server::joinChannel(std::string channel, int fd)
 {
+	std::string msg;
+
 	_nbCliChannel[channel].insert(std::pair<std::string, int>(_clients[fd]->getNickName(), fd));
 	sendChannel(-1, channel, ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " JOIN " + channel + "\r\n");
+	msg = ":" + _name + " 353 " + _clients[fd]->getNickName() + " = " + channel + " :";
+	for (std::map<std::string, int>::iterator it = _nbCliChannel[channel].begin(); it != _nbCliChannel[channel].end(); ++it)
+	{
+		if (_channels[channel]->isOp(it->second))
+			msg += "@" + _clients[it->second]->getNickName() + " ";
+		else 
+			msg += _clients[it->second]->getNickName() + " ";
+	}
+	mysend(fd, msg + "\r\n");
+	mysend(fd, ":server 366 " + _clients[fd]->getNickName() +  " " + channel + " :End of /NAMES list\r\n");
 }
 
 void Server::createChannel(int op, std::string value)
@@ -59,7 +71,6 @@ void Server::JOIN(int fd, std::deque<std::string> cmd)
 				continue ;
 			}
 			joinChannel(*(channels.begin() + i), fd);
-			NAMES(fd, cmd);
 		}
 	}
 }
