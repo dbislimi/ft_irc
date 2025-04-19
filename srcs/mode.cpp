@@ -67,14 +67,14 @@ bool Server::MODEt(int fd, std::deque<std::string> cmd, Channel* channel)
 	std::string msg;
 
 	if (cmd[2] == "+t"){
-		if (channel->getTopicRestrict() == 0){
+		if (channel->getTopicRestrict() == false){
 			msg = ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " MODE " + cmd[1] + " " + cmd[2] + "\r\n";
 			send(fd, msg.c_str(), msg.length(), 0);
 			channel->setTopicRestrict(true);
 		}
 	}
 	else{
-		if (channel->getTopicRestrict() == 1){
+		if (channel->getTopicRestrict() == true){
 			msg = ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " MODE " + cmd[1] + " " + cmd[2] + "\r\n";
 			send(fd, msg.c_str(), msg.length(), 0);
 			channel->setTopicRestrict(false);
@@ -134,7 +134,12 @@ bool Server::MODEo(int fd, std::deque<std::string> cmd, Channel* channel)
 		send(fd, msg.c_str(), msg.length(), 0);
 		return (0);
 	}
-	if (cmd[4] == target->second->getNickName()){	
+	if (target == _clients.end()){
+		msg = ":" + _name + " 401 " + _clients[fd]->getNickName() + " " + cmd[1] + " :No such nick\r\n";
+		send(fd, msg.c_str(), msg.length(), 0);
+		return (0);
+	}
+	if (cmd[3] == target->second->getNickName()){	
 		if (cmd[2] == "+o" && (cmd.size() == 4)){
 			channel->addOp(target->first);
 			target->second->setBoolOps(true);
@@ -147,11 +152,6 @@ bool Server::MODEo(int fd, std::deque<std::string> cmd, Channel* channel)
 			msg = ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " MODE " + cmd[1] + " " + cmd[2] + " " + target->second->getNickName() + "\r\n";
 			sendChannel(-1, cmd[1], msg);
 		}
-	}
-	else{
-		msg = ":" + _name + " 401 " + _clients[fd]->getNickName() + " " + cmd[1] + " :No such nick\r\n";
-		send(fd, msg.c_str(), msg.length(), 0);
-		return (0);
 	}
 	return (1);
 }

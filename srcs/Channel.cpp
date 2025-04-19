@@ -119,3 +119,7 @@ std::string	Channel::getModes(){
 		str += " " + _mdp;
 	return (str);
 }
+
+std::string Channel::getName(){
+	return _name;
+}

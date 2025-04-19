@@ -34,10 +34,6 @@ void	Server::TOPIC(int fd, std::deque<std::string> cmd){
 			}
 			return ;
 		}
-		if (_channels[cmd[1]]->isOp(fd) == false){
-			mysend(fd, ":serveur 482 " + _clients[fd]->getNickName() + " " + cmd[1] + " :You're not channel operator\r\n");
-			return ;
-		}
 		std::string	topic = " " + catParam(cmd, 2);
 		sendChannel(-1, cmd[1], ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " TOPIC " + cmd[1] + topic + "\r\n");
 		_channels[cmd[1]]->setTopic(topic);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/16 15:19:32 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/19 22:00:49 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ class Client {
 		Server*		_server;
 		std::string	_to_cat;
 		// bool 		_isopps;
+		std::map<std::string, bool> _invited;
 
 	public:
 		Client(Server* server): _isConnected(false), _nick(false), _server(server){}
@@ -58,6 +59,9 @@ class Client {
 		std::string	getCat() const;
 		std::string cat(std::string buff);
 		void		clearCat();
+		void		setInvited(std::string, bool value);
+		bool		getInvited(Channel c);
+		void		insertInvited(std::string, bool val);
 		//bool		getIsopps();
 		//void		setIsopps(bool v);
 };

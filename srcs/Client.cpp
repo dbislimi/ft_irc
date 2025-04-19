@@ -98,6 +98,23 @@ void Client::setBoolNick(){
     _nick = true;
 }
 
+void Client::setInvited(std::string nm, bool value){
+    _invited[nm] = value;
+}
+
+void Client::insertInvited(std::string nm, bool val){
+    _invited[nm] = val;
+}
+
+bool Client::getInvited(Channel c){
+    for(std::map<std::string, bool>::iterator it = _invited.begin(); it != _invited.end(); ++it){
+        if (it->first == c.getName()){
+            return it->second;
+        }
+    }
+    return false;
+}
+
 /*bool Client::getIsopps(){
     return _isopps;
 }
