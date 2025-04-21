@@ -6,11 +6,14 @@
 /*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/10 16:36:47 by dravaono         ###   ########.fr       */
+/*   Updated: 2025/04/17 16:15:50 by dravaono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/all.hpp"
+
+static const int PING_TIMEOUT = 8;
+static const int PING_WAITNEXT = 15;
 
 bool Server::signal = false;
 
@@ -50,23 +53,56 @@ void Server::_init_socket()
 	_fds.push_back(poll);
 }
 
-void Server::init()
-{
-	_init_socket();
-	while (Server::signal == false)
-	{
-		if ((poll(&_fds[0], _fds.size(), -1) == -1) && Server::signal == false){
-			throw std::runtime_error("Error: function poll failed");
-		}
-		for (size_t i = 0; i < _fds.size(); ++i){
-			if (_fds[i].revents & POLLIN){
-				if (_fds[i].fd == _serverFd)
-					newClient();
-				else
-					newCmd(_fds[i].fd);
+void Server::init() {
+    _init_socket();
+    while (Server::signal == false) {
+		pingClient();
+        if ((poll(&_fds[0], _fds.size(), 3000) == -1) && Server::signal == false) {
+            throw std::runtime_error("Error: function poll failed");
+        }
+        for (size_t i = 0; i < _fds.size(); ++i) {
+            if (_fds[i].revents & POLLIN) {
+                if (_fds[i].fd == _serverFd)
+                    newClient();
+                else
+                    newCmd(_fds[i].fd);
+            }
+        }
+    }
+}
+
+void Server::pingClient() {
+	time_t currentTime = time(NULL);
+	for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); ) {
+		if (it->second->isConnected() && (currentTime - it->second->getLastAction() > PING_TIMEOUT)) {
+			if (currentTime - it->second->getLastPing() > PING_TIMEOUT) {
+				std::string pingMsg = "PING :" + this->_name + "\r\n";
+				send(it->second->getFd(), pingMsg.c_str(), pingMsg.size(), 0);
+				it->second->setLastPing(currentTime);
 			}
 		}
+
+		if (currentTime - it->second->getLastPong() > PING_WAITNEXT) {
+			if (!it->second->getStartedPing()) {
+				++it;
+				continue;
+			}
+			int fd = it->second->getFd();
+			++it;
+			eraseClient(fd);
+		} else {
+			++it;
+		}
 	}
+}
+
+
+void Server::PONG(int fd, std::deque<std::string> cmd) {
+	(void)cmd;
+    time_t timer = time(NULL);
+    _clients[fd]->setLastAction(timer);
+	_clients[fd]->setLastPong(timer);
+	_clients[fd]->setStartedPing(true);
 }
 
 void Server::newClient(){
@@ -85,10 +121,6 @@ void Server::newClient(){
 	poll.events = POLLIN;
 	poll.revents = 0;
 	clicli->setFd(clientfd);
-	// clicli->setSign(false);
-	// clicli->setBoolName(false);
-	// clicli->setBoolOps(false);
-	
 	clicli->setIpAdd(sa.sin_addr);
 	_clients.insert(std::pair<int, Client *>(clientfd, clicli));
 	_fds.push_back(poll);
@@ -99,7 +131,9 @@ void Server::newClient(){
 void Server::newCmd(int fd)
 {
 	char buff[1024];
+    time_t currentTime = time(NULL);
 	
+	_clients[fd]->setLastAction(currentTime);
 	memset(buff, 0, sizeof(buff));
 	size_t bytes = recv(fd, buff, sizeof(buff) - 1, 0);
 	if (bytes <= 0){

@@ -6,7 +6,7 @@
 /*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/10 15:55:03 by dravaono         ###   ########.fr       */
+/*   Updated: 2025/04/16 17:46:09 by dravaono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ class Server {
 		Server(const std::string& name, int port, std::string password) : _name(name), _port(port), _passWord(password){
 			_cmds["JOIN"] = &Server::JOIN;
 			_cmds["PART"] = &Server::PART;
+			_cmds["PONG"] = &Server::PONG;
 			_cmds["QUIT"] = &Server::QUIT;
 			_cmds["PASS"] = &Server::PASS;
 			_cmds["NICK"] = &Server::NICK;
@@ -48,6 +49,8 @@ class Server {
 		static void signals(int signum);
 		void	init();
 		void 	newClient();
+		void	pingClient();
+		void	pongClient(int fd, std::string msg);
 		void	newCmd(int fd);
 		void	printmap();
 		void	eraseClient(int fd);
@@ -59,6 +62,7 @@ class Server {
 
 		void	JOIN(int fd, std::deque<std::string> cmd);
 		void	PART(int fd, std::deque<std::string> cmd);
+		void	PONG(int fd, std::deque<std::string> cmd);
 		void	USER(int fd, std::deque<std::string> cmd);
 		void	NICK(int fd, std::deque<std::string> cmd);
 		void	KICK(int fd, std::deque<std::string> cmd);

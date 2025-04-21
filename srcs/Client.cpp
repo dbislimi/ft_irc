@@ -90,6 +90,34 @@ void Client::setIsInvited(bool isInvited){
     this->_isInvited = isInvited;
 }
 
-void Client::statusInvit(std::string channel){
-    for()
+time_t Client::getLastAction(){
+    return _lastAction;
+}
+
+void Client::setLastAction(time_t lastAct){
+    this->_lastAction = lastAct;
+}
+
+time_t Client::getLastPing(){
+    return _lastPing;
+}
+
+void Client::setLastPing(time_t lastPing){
+    this->_lastPing = lastPing;
+}
+
+time_t Client::getLastPong(){
+    return _lastPong;
+}
+
+void Client::setLastPong(time_t lastPong){
+    this->_lastPong = lastPong;
+}
+
+bool Client::getStartedPing() const{
+    return this->_startToPing;
+}
+
+void Client::setStartedPing(bool startPing){
+    this->_startToPing = startPing;
 }

@@ -6,7 +6,7 @@
 /*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/10 17:04:40 by dravaono         ###   ########.fr       */
+/*   Updated: 2025/04/16 19:12:34 by dravaono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,14 @@ class Client {
 		std::string	_channel;
 		Server*		_server;
 		std::string	_to_cat;
+		time_t 		_lastAction;
+		time_t 		_lastPing;
+		time_t 		_lastPong;
+		bool _startToPing;
+		
 
 	public:
-		Client(Server* server): _isConnected(false), _isRegistered(false), _nick(false), _server(server){}
+		Client(Server* server): _isConnected(false), _isRegistered(false), _nick(false), _server(server), _startToPing(false){}
 		~Client(){std::cout << "Client <" << _fd << "> disconnected." << std::endl;}
 		bool getRegister();
 		bool getIsInvited();
@@ -43,6 +48,8 @@ class Client {
 		void setRegister();
 		bool	isConnected() const;
 		void	connect();
+		bool	getStartedPing() const;
+		void	setStartedPing(bool startPing);
 		void setFd(int fd);
 		int	getFd() const;
 		std::string	getUserName() const;
@@ -60,4 +67,10 @@ class Client {
 		std::string	getCat() const;
 		std::string cat(std::string buff);
 		void		clearCat();
+		time_t getLastAction();
+		void   setLastAction(time_t lastAct);
+		time_t getLastPing();
+    	void setLastPing(time_t lastPing);
+		time_t getLastPong();
+    	void setLastPong(time_t lastPong);
 };
