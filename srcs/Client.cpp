@@ -20,14 +20,6 @@ int	Client::getFd() const{
     return (this->_fd);
 }
 
-void Client::setSign(bool isSign){
-    this->_isSigned = isSign;
-}
-
-bool Client::getSign(){
-    return (_isSigned);
-}
-
 void    Client::connect(){
     _server->intro(_fd);
     this->_isConnected = true;
@@ -98,10 +90,50 @@ void Client::setBoolNick(){
     _nick = true;
 }
 
-/*bool Client::getIsopps(){
-    return _isopps;
+bool Client::getRegister(){
+    return (this->_isRegistered);
 }
 
-void Client::setIsopps(bool val){
-    _isopps = val;
-}*/
+void Client::setRegister(){
+    _isRegistered = true;
+}
+
+bool Client::getIsInvited(){
+    return this->_isInvited;
+}
+
+void Client::setIsInvited(bool isInvited){
+    this->_isInvited = isInvited;
+}
+
+time_t Client::getLastAction(){
+    return _lastAction;
+}
+
+void Client::setLastAction(time_t lastAct){
+    this->_lastAction = lastAct;
+}
+
+time_t Client::getLastPing(){
+    return _lastPing;
+}
+
+void Client::setLastPing(time_t lastPing){
+    this->_lastPing = lastPing;
+}
+
+time_t Client::getLastPong(){
+    return _lastPong;
+}
+
+void Client::setLastPong(time_t lastPong){
+    this->_lastPong = lastPong;
+}
+
+bool Client::getStartedPing() const{
+    return this->_startToPing;
+}
+
+void Client::setStartedPing(bool startPing){
+    this->_startToPing = startPing;
+}

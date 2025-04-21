@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/16 16:22:29 by dbislimi         ###   ########.fr       */
+/*   Created: 2025/03/13 16:40:16 by dbislimi          #+#    #+#             */
+/*   Updated: 2025/04/21 16:13:23 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,20 @@ class Channel {
 		bool				_isLimitUser;
 		bool				_isTopicRestrict;
 		std::string			_modes;
-		
+				bool				_channelOnInvited;
+		bool				_channelWithPass;
+		bool				_channelUserRestrict;
+
 	public:
-		Channel(int op, const std::string& name): _name(name){_ops.push_back(op);}
+		Channel(int op, const std::string& name): _name(name){_ops.push_back(op), _channelOnInvited = false;}
 
 		bool	isOp(int fd);
+		void	setChannelOnInvited(bool channelOnInvited);
+		bool	getChannelOnInvited();
+		void	setChannelWithPass(bool channelWithPass);
+		bool	getChannelWithPass();
+		void	setChannelUserRestrict(bool channelUserRestrict);
+		bool	getChannelUserRestrict();
 		void	removeOp(int fd);
 		void	addOp(int fd);
 

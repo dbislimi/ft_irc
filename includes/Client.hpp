@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/16 15:19:32 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/21 16:14:34 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,10 @@ class Client {
 		bool _isSigned;
 		bool _allName;
 		bool _isOps;
-		bool	_nick;
+		bool _nick;
+		bool _isInvited;
 		int _fd;
+		std::map<std::string, bool> _invitedOn;
 		std::string		_ip;
 		// struct in_addr	addr;
 		std::string _userName;
@@ -30,21 +32,23 @@ class Client {
 		std::string	_tempNick;
 		Server*		_server;
 		std::string	_to_cat;
-		// bool 		_isopps;
+		time_t 		_lastAction;
+		time_t 		_lastPing;
+		time_t 		_lastPong;
+		bool _startToPing;
+		
 
 	public:
-		Client(Server* server): _isConnected(false), _nick(false), _server(server){}
+		Client(Server* server): _isConnected(false), _isRegistered(false), _nick(false), _server(server), _startToPing(false){}
 		~Client(){std::cout << "Client <" << _fd << "> disconnected." << std::endl;}
-		bool getSign();
-		bool getBoolName();
-		bool getBoolNick();
-		void setBoolNick();
-		void setBoolOps(bool isOps);
-		bool getBoolOps();
-		void setSign(bool isSigned);
-		void setBoolName(bool allName);
+		bool getRegister();
+		bool getIsInvited();
+		void setIsInvited(bool isInvited);
+		void setRegister();
 		bool	isConnected() const;
 		void	connect();
+		bool	getStartedPing() const;
+		void	setStartedPing(bool startPing);
 		void setFd(int fd);
 		int	getFd() const;
 		std::string	getUserName() const;
@@ -55,9 +59,17 @@ class Client {
 		void setTempNick(std::string nick);
 		void setIpAdd(struct in_addr addr);
 		const std::string&	getIp() const;
+		void welcomeMsg();
+		void	setChannel(std::string& name);
+		void statusInvit(std::string channel);
+		std::string	getChannel() const;
 		std::string	getCat() const;
 		std::string cat(std::string buff);
 		void		clearCat();
-		//bool		getIsopps();
-		//void		setIsopps(bool v);
+		time_t getLastAction();
+		void   setLastAction(time_t lastAct);
+		time_t getLastPing();
+    	void setLastPing(time_t lastPing);
+		time_t getLastPong();
+    	void setLastPong(time_t lastPong);
 };

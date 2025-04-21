@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/18 17:03:40 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/21 16:14:59 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ class Server {
 		Server(const std::string& name, int port, std::string password) : _name(name), _port(port), _passWord(password){
 			_cmds["JOIN"] = &Server::JOIN;
 			_cmds["PART"] = &Server::PART;
+			_cmds["PONG"] = &Server::PONG;
 			_cmds["QUIT"] = &Server::QUIT;
 			_cmds["PASS"] = &Server::PASS;
 			_cmds["NICK"] = &Server::NICK;
@@ -51,6 +52,8 @@ class Server {
 		static void signals(int signum);
 		void	init();
 		void 	newClient();
+		void	pingClient();
+		void	pongClient(int fd, std::string msg);
 		void	newCmd(int fd);
 		void	printmap();
 		void	eraseClient(int fd);
@@ -61,6 +64,7 @@ class Server {
 		ssize_t	mysend(int fd, std::string msg);
 
 		void	JOIN(int fd, std::deque<std::string> cmd);
+		void	PONG(int fd, std::deque<std::string> cmd);
 		void	USER(int fd, std::deque<std::string> cmd);
 		void	NICK(int fd, std::deque<std::string> cmd);
 		void	KICK(int fd, std::deque<std::string> cmd);
@@ -86,6 +90,11 @@ class Server {
 		bool checkClient(std::string value);
 		void sendChannel(int fd, std::string channel_name, std::string msg);
 		bool findUser(std::string channel_name, std::string nick);
+
+
+		bool channelIsInviteOnly(std::string value);
+		bool channelWithPassword(std::string value);
+		bool channelWithUserRestrict(std::string value);
 		int	findFd(std::string nick);
 		bool isCorrectNick(std::string nick);
 };
