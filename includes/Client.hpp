@@ -6,7 +6,7 @@
 /*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/16 19:12:34 by dravaono         ###   ########.fr       */
+/*   Updated: 2025/04/21 18:35:58 by dravaono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ class Client {
 		time_t 		_lastPing;
 		time_t 		_lastPong;
 		bool _startToPing;
+		time_t _timeConnect;
 		
 
 	public:
@@ -73,4 +74,6 @@ class Client {
     	void setLastPing(time_t lastPing);
 		time_t getLastPong();
     	void setLastPong(time_t lastPong);
+		time_t getTimeConnect();
+    	void setTimeConnect(time_t timeConnect);
 };
