@@ -227,3 +227,11 @@ void Channel::setChannelOnInvited(bool channelOnInvited){
 bool Channel::getChannelOnInvited(){
     return this->_channelOnInvited;
 }
+
+void Channel::setChannelOnInvited(bool channelOnInvited){
+    this->_channelOnInvited = channelOnInvited;
+}
+
+bool Channel::getChannelOnInvited(){
+    return this->_channelOnInvited;
+}
