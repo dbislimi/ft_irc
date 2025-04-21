@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/13 16:40:16 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/04/21 16:13:23 by dbislimi         ###   ########.fr       */
+/*   Created: Invalid date        by                   #+#    #+#             */
+/*   Updated: 2025/04/21 16:26:34 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,4 +65,5 @@ class Channel {
 		void		setTopicRestrict(bool val);
 		void		updateModes(std::deque<std::string> cmd);
 		std::string	getModes();
+		std::string getName();
 };

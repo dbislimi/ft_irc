@@ -35,6 +35,7 @@ void Server::createChannel(int op, std::string value)
 	channel->setTopicRestrict(true);
 	channel->setisLimitUser(false);
 	_clients[op]->setBoolOps(true);
+	_clients[op]->insertInvited(value, false);   //remplacer channel* par string mais tjrs la meme segfault
 }
 
 void Server::JOIN(int fd, std::deque<std::string> cmd)
@@ -69,6 +70,10 @@ void Server::JOIN(int fd, std::deque<std::string> cmd)
 			if (_channels[*(channels.begin() + i)]->getisLimitUser() == true && _nbCliChannel[*(channels.begin() + i)].size() >= _channels[*(channels.begin() + i)]->getLimitUser()){
 				mysend(fd, ":server 471 " + _clients[fd]->getNickName() +  " " + *(channels.begin() + i) + " :Cannot join channel (+l)\r\n");
 				continue ;
+			}
+			if (_channels[*(channels.begin() + i)]->getInvitRestrict() == true && _clients[fd]->getInvited(*_channels[*(channels.begin() + i)]) == false){
+				mysend(fd, ":" + _name + " 473 " + _clients[fd]->getNickName() + " " + cmd[1] + " :Cannot join channel (+i)\r\n");
+				continue;
 			}
 			joinChannel(*(channels.begin() + i), fd);
 		}

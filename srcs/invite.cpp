@@ -29,6 +29,7 @@ void	Server::INVITE(int fd, std::deque<std::string> cmd){
 			break;
 		it++;
 	}
+	it->second->setInvited(cmd[2], true);
 	
 	mysend(it->second->getFd(), "You have been invited to \00306" + cmd[2] + "\003 by \00302" + ot->second->getNickName() + "\003\r\n");
 	mysend(fd, "You've invited \00302" + it->second->getNickName() + "\003 to \00306" + cmd[2] + "\003\r\n");

@@ -235,3 +235,6 @@ void Channel::setChannelOnInvited(bool channelOnInvited){
 bool Channel::getChannelOnInvited(){
     return this->_channelOnInvited;
 }
+std::string Channel::getName(){
+	return _name;
+}
