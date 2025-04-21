@@ -14,6 +14,8 @@ void Server::joinChannel(std::string channel, int fd)
 
 	_nbCliChannel[channel].insert(std::pair<std::string, int>(_clients[fd]->getNickName(), fd));
 	sendChannel(-1, channel, ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " JOIN " + channel + "\r\n");
+	if (!_channels[channel]->getTopic().empty())
+		mysend(fd, ":server 332 " + _clients[fd]->getNickName() +  " " + channel + _channels[channel]->getTopic() +"\r\n");
 	msg = ":" + _name + " 353 " + _clients[fd]->getNickName() + " = " + channel + " :";
 	for (std::map<std::string, int>::iterator it = _nbCliChannel[channel].begin(); it != _nbCliChannel[channel].end(); ++it)
 	{
@@ -32,9 +34,8 @@ void Server::createChannel(int op, std::string value)
 	_channels.insert(std::pair<std::string, Channel *>(value, channel));
 	channel->setInvitRestrict(false);
 	channel->setIsmdp(false);
-	channel->setTopicRestrict(true);
+	channel->setTopicRestrict(false);
 	channel->setisLimitUser(false);
-	_clients[op]->setBoolOps(true);
 }
 
 void Server::JOIN(int fd, std::deque<std::string> cmd)
@@ -55,7 +56,8 @@ void Server::JOIN(int fd, std::deque<std::string> cmd)
 		return ;
 	}
 	channels = split(cmd[1], ",");
-	keys = split(cmd[2], ",");
+	if (cmd.size() > 2)
+		keys = split(cmd[2], ",");
 	for (size_t	i = 0; i < channels.size(); ++i){
 		if ((*(channels.begin() + i))[0] != '#')
 			mysend(fd, ":server 403 " + _clients[fd]->getNickName() +  " " + *(channels.begin() + i) + " :No such channel\r\n");
@@ -66,7 +68,7 @@ void Server::JOIN(int fd, std::deque<std::string> cmd)
 				mysend(fd, ":server 475 " + _clients[fd]->getNickName() +  " " + *(channels.begin() + i) + " :Cannot join channel (+k)\r\n");
 				continue ;
 			}
-			if (_channels[*(channels.begin() + i)]->getisLimitUser() == true && _nbCliChannel[*(channels.begin() + i)].size() >= _channels[*(channels.begin() + i)]->getLimitUser()){
+			if (_channels[*(channels.begin() + i)]->getisLimitUser() == true && _nbCliChannel[*(channels.begin() + i)].size() >= static_cast<size_t>(_channels[*(channels.begin() + i)]->getLimitUser())){
 				mysend(fd, ":server 471 " + _clients[fd]->getNickName() +  " " + *(channels.begin() + i) + " :Cannot join channel (+l)\r\n");
 				continue ;
 			}

@@ -44,11 +44,11 @@ void		Channel::setIsmdp(bool val){
 	_ismdp = val;
 }
 
-size_t			Channel::getLimitUser(){
+long			Channel::getLimitUser(){
 	return _limitUser;
 }
 
-void		Channel::setLimitUser(size_t val){
+void		Channel::setLimitUser(long val){
 	_limitUser = val;
 }
 

@@ -66,14 +66,6 @@ bool Client::getBoolName(){
     return (_allName);
 }
 
-void Client::setBoolOps(bool isOps){
-    this->_isOps = isOps;
-}
-
-bool Client::getBoolOps(){
-    return _isOps;
-}
-
 std::string    Client::getCat() const{
     return (_to_cat);
 }

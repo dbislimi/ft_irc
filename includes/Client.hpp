@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/16 15:19:32 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/21 18:31:54 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ class Client {
 		bool	_isConnected;
 		bool _isSigned;
 		bool _allName;
-		bool _isOps;
 		bool	_nick;
 		int _fd;
 		std::string		_ip;
@@ -39,8 +38,6 @@ class Client {
 		bool getBoolName();
 		bool getBoolNick();
 		void setBoolNick();
-		void setBoolOps(bool isOps);
-		bool getBoolOps();
 		void setSign(bool isSigned);
 		void setBoolName(bool allName);
 		bool	isConnected() const;
