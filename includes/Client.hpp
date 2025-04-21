@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/21 16:26:29 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/21 16:30:59 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 class Client {
 	private:
 		bool	_isConnected;
+		bool	_isRegistered;
 		bool _isSigned;
 		bool _allName;
 		bool _isOps;
@@ -42,12 +43,20 @@ class Client {
 	public:
 		Client(Server* server): _isConnected(false), _isRegistered(false), _nick(false), _server(server), _startToPing(false){}
 		~Client(){std::cout << "Client <" << _fd << "> disconnected." << std::endl;}
+		bool getSign();
+		bool getBoolName();
+		bool getBoolNick();
+		void setBoolNick();
+		void setBoolOps(bool isOps);
+		bool getBoolOps();
+		void setSign(bool isSigned);
+		void setBoolName(bool allName);
+		void	connect();
 		bool getRegister();
 		bool getIsInvited();
 		void setIsInvited(bool isInvited);
 		void setRegister();
 		bool	isConnected() const;
-		void	connect();
 		bool	getStartedPing() const;
 		void	setStartedPing(bool startPing);
 		void setFd(int fd);
