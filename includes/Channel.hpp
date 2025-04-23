@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/21 16:26:34 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/23 16:00:48 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ class Channel {
 		bool				_invitRestrict;
 		bool				_ismdp;
 		std::string			_mdp;
-		size_t				_limitUser;
+		long				_limitUser;
 		bool				_isLimitUser;
 		bool				_isTopicRestrict;
 		std::string			_modes;
@@ -57,8 +57,8 @@ class Channel {
 		void		setMdp(std::string word);
 		bool		getIsmdp();
 		void		setIsmdp(bool val);
-		size_t 		getLimitUser();
-		void		setLimitUser(size_t val);
+		long 		getLimitUser();
+		void		setLimitUser(long val);
 		bool		getisLimitUser();
 		void		setisLimitUser(bool val);
 		bool		getTopicRestrict();

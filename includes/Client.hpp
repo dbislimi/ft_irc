@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/21 16:30:59 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/23 16:01:37 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,6 @@ class Client {
 		bool getBoolName();
 		bool getBoolNick();
 		void setBoolNick();
-		void setBoolOps(bool isOps);
-		bool getBoolOps();
 		void setSign(bool isSigned);
 		void setBoolName(bool allName);
 		void	connect();

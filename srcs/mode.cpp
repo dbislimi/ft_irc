@@ -25,11 +25,10 @@ void Server::MODE(int fd, std::deque<std::string> cmd)
 		return ;
 	}
 	if (cmd.size() == 2){
-		std::cout << "test" << std::endl;
 		mysend(fd, ":server 324 " + _clients[fd]->getNickName() +  " " + cmd[1] + " :+" + _channels[cmd[1]]->getModes() + "\r\n");
 		return ;	
 	}
-	if (_clients[fd]->getBoolOps() == false){
+	if (_channels[cmd[1]]->isOp(fd) == false){
 		mysend(fd, ":" + _name + " 482 " + _clients[fd]->getNickName() + " " + cmd[1] + " :You're not channel operator\r\n");
 		return ;
 	}
@@ -69,14 +68,14 @@ bool Server::MODEt(int fd, std::deque<std::string> cmd, Channel* channel)
 	if (cmd[2] == "+t"){
 		if (channel->getTopicRestrict() == false){
 			msg = ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " MODE " + cmd[1] + " " + cmd[2] + "\r\n";
-			send(fd, msg.c_str(), msg.length(), 0);
+			sendChannel(-1, cmd[1], msg);
 			channel->setTopicRestrict(true);
 		}
 	}
 	else{
 		if (channel->getTopicRestrict() == true){
 			msg = ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " MODE " + cmd[1] + " " + cmd[2] + "\r\n";
-			send(fd, msg.c_str(), msg.length(), 0);
+			sendChannel(-1, cmd[1], msg);
 			channel->setTopicRestrict(false);
 		}
 	}
@@ -87,18 +86,18 @@ bool Server::MODEk(int fd, std::deque<std::string> cmd, Channel* channel)
 {
 	std::string msg;
 
-	if (cmd.size() == 3){
-		msg = ":" + _name + " 461 " + _clients[fd]->getNickName() + " " + cmd[1] + " :Not enough parameters\r\n";
-		send(fd, msg.c_str(), msg.length(), 0);
-		return (0);
-	}
 	if (cmd[2] == "+k")
 	{
+		if (cmd.size() < 4){
+			msg = ":" + _name + " 461 " + _clients[fd]->getNickName() + " " + cmd[1] + " :Not enough parameters\r\n";
+			send(fd, msg.c_str(), msg.length(), 0);
+			return (0);
+		}
 		if (channel->getIsmdp() == false){
 			channel->setMdp(cmd[3]);
 			channel->setIsmdp(true);
 			msg = ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " MODE " + cmd[1] + " " + cmd[2] + " " + cmd[3] + "\r\n";
-			send(fd, msg.c_str(), msg.length(), 0);
+			sendChannel(-1, cmd[1], msg);
 		}
 		else if (channel->getIsmdp() == true){
 			msg = ":" + _name + " 467 " + _clients[fd]->getNickName() + " " + cmd[1] + " :Channel key already set\r\n";
@@ -107,52 +106,43 @@ bool Server::MODEk(int fd, std::deque<std::string> cmd, Channel* channel)
 		}
 	}
 	else if (cmd[2] == "-k"){
-		if (cmd[3] == channel->getMdp()){
-			channel->setMdp("");
-			channel->setIsmdp(false);
-			msg =  ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " MODE " + cmd[1] + " " + cmd[2] + " " + cmd[3] + "\r\n";
-			send(fd, msg.c_str(), msg.length(), 0);
-		}
-		else{
-			msg = ":" + _name + " 467 " + _clients[fd]->getNickName() + " " + cmd[1] + " :Channel key already set\r\n";
-			send(fd, msg.c_str(), msg.length(), 0);
-			return (0);
-		}
+		channel->setMdp("");
+		channel->setIsmdp(false);
+		msg =  ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " MODE " + cmd[1] + " " + cmd[2] + " " + cmd[3] + "\r\n";
+		sendChannel(-1, cmd[1], msg);
 	}
 	return (1);
 }
 
 bool Server::MODEo(int fd, std::deque<std::string> cmd, Channel* channel)
 {
-	std::map<int, Client *>::iterator target = _clients.begin();
-	while (target->second->getNickName() != cmd[3] && target != _clients.end())
-		target++;
+	if (cmd.size() < 4){
+		mysend(fd, ":server 461 " + _clients[fd]->getNickName() +  " " + cmd[0] + " :Not enough parameters\r\n");
+		return (0);
+	}
+	std::map<std::string, int>::iterator target = _nbCliChannel[cmd[1]].find(cmd[3]);
 	std::string msg;
+	
+	if (target == _nbCliChannel[cmd[1]].end()){
+		msg = ":" + _name + " 401 " + _clients[fd]->getNickName() + " " + cmd[3] + " :No such nick\r\n";
+		send(fd, msg.c_str(), msg.length(), 0);
+		return (0);
+	}
+	if (cmd.size() == 3){		send(fd, msg.c_str(), msg.length(), 0);
 
-	if (cmd.size() == 3){
 		msg = ":" + _name + " 696 " + _clients[fd]->getNickName() + " " + cmd[1] + " :You must specify a parameter for the op mode. Syntax: <nick>.\r\n";
 		send(fd, msg.c_str(), msg.length(), 0);
 		return (0);
 	}
-	if (target == _clients.end()){
-		msg = ":" + _name + " 401 " + _clients[fd]->getNickName() + " " + cmd[1] + " :No such nick\r\n";
-		send(fd, msg.c_str(), msg.length(), 0);
-		return (0);
+	if (cmd[2] == "+o"){
+		channel->addOp(target->second);
+		msg = ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " MODE " + cmd[1] + " " + cmd[2] + " " + target->first + "\r\n";
 	}
-	if (cmd[3] == target->second->getNickName()){	
-		if (cmd[2] == "+o" && (cmd.size() == 4)){
-			channel->addOp(target->first);
-			target->second->setBoolOps(true);
-			msg = ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " MODE " + cmd[1] + " " + cmd[2] + " " + target->second->getNickName() + "\r\n";
-			sendChannel(-1, cmd[1], msg);
-		}
-		else if (cmd[2] == "-o" && (cmd.size() == 4)){
-			channel->addOp(target->first);
-			target->second->setBoolOps(false);
-			msg = ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " MODE " + cmd[1] + " " + cmd[2] + " " + target->second->getNickName() + "\r\n";
-			sendChannel(-1, cmd[1], msg);
-		}
+	else if (cmd[2] == "-o"){
+		channel->addOp(target->second);
+		msg = ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " MODE " + cmd[1] + " " + cmd[2] + " " + target->first + "\r\n";
 	}
+	sendChannel(-1, cmd[1], msg);
 	return (1);
 }
 
@@ -160,22 +150,29 @@ bool Server::MODEl(int fd, std::deque<std::string> cmd, Channel* channel)
 {
 	std::string msg;
 
-	if (cmd[2] == "+l" && isnumber(cmd[3]) == true){
-		if (cmd.size() == 3){
-			msg = ":" + _name + " 461 " + _clients[fd]->getNickName() + " " + cmd[1] + " :Not enough parameters\r\n";
-			send(fd, msg.c_str(), msg.length(), 0);
+	if (cmd[2] == "+l"){
+		if (cmd.size() < 4){
+			mysend(fd, ":server 461 " + _clients[fd]->getNickName() +  " " + cmd[0] + " :Not enough parameters\r\n");
 			return (0);
 		}
+		if (isnumber(cmd[3]) == false)
+			return (0);
+		if (atol(cmd[3].c_str()) > INT_MAX)
+			return (0);
+		if (atol(cmd[3].c_str()) == channel->getLimitUser())
+			return (0);
 		channel->setLimitUser(atoi(cmd[3].c_str()));
 		channel->setisLimitUser(true);
 		msg =  ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " MODE " + cmd[1] + " " + cmd[2] + " " + cmd[3] + "\r\n";
-		send(fd, msg.c_str(), msg.length(), 0);
+		sendChannel(-1, cmd[1], msg);
 	}
 	else if (cmd[2] == "-l"){
+		if (channel->getisLimitUser() == false)
+			return (0);
 		channel->setLimitUser(INT_MAX);
 		channel->setisLimitUser(false);
 		msg =  ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " MODE " + cmd[1] + " " + cmd[2] + "\r\n";
-		send(fd, msg.c_str(), msg.length(), 0);
+		sendChannel(-1, cmd[1], msg);
 	}
 	return (1);
 }

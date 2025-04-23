@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/21 16:20:03 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/23 16:03:43 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,6 +198,22 @@ void Server::eraseClient(int fd)
 		{
 			_fds.erase(it);
 			break;
+		}
+	}
+	for (std::map<std::string, std::map<std::string, int> >::iterator it = _nbCliChannel.begin(); it != _nbCliChannel.end();){
+		std::map<std::string, std::map<std::string, int> >::iterator temp1 = it;
+		for (std::map<std::string, int>::iterator it2 = (it->second).begin(); it2 != (it->second).end();){
+			std::map<std::string, int>::iterator temp2 = it2;
+			++it2;
+			if (temp2->second == fd){
+				(it->second).erase(temp2);
+			}
+		}
+		++it;
+		if ((temp1->second).empty()){
+			delete _channels[temp1->first];
+			_channels.erase(temp1->first);
+			_nbCliChannel.erase(temp1);
 		}
 	}
 	std::map<int, Client *>::iterator it = _clients.find(fd);

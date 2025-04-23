@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 14:22:35 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/04/18 17:02:45 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/21 18:24:45 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ std::deque<std::string>	split(std::string str, std::string sep){
 		if (first == std::string::npos)
 			break ;
 		last = str.find_first_of(sep, first);
+		if (last == std::string::npos)
+			last = str.length();
 		deque.push_back(str.substr(first, last - first));
 	}
 	return (deque);
