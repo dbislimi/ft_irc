@@ -26,21 +26,26 @@ void	Server::TOPIC(int fd, std::deque<std::string> cmd){
 			mysend(fd, ":serveur 331 " + _clients[fd]->getNickName() + " " + cmd[1] + " :No topic is set\r\n");
 		}
 		else{
-			mysend(fd, ":serveur 332 " + _clients[fd]->getNickName() + " " + cmd[1] + _channels[cmd[1]]->getTopic() + "\r\n");
+			mysend(fd, ":serveur 332 " + _clients[fd]->getNickName() + " " + cmd[1] + " :" + _channels[cmd[1]]->getTopic() + "\r\n");
 			mysend(fd, ":serveur 333 " + _clients[fd]->getNickName() + " " + cmd[1] + " " + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " " + longToString(_channels[cmd[1]]->getTime()) + "\r\n");
 		}
 		return ;
 	}
 	if (it->second->getTopicRestrict() == false || it->second->isOp(fd) == true){
-		if (!(cmd[2].size() == 1 && cmd[2][0] == ":")){
-			std::string	topic = " " + catParam(cmd, 2);
-			sendChannel(-1, cmd[1], ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " TOPIC " + cmd[1] + topic + "\r\n");
-			_channels[cmd[1]]->setTopic(topic);
-			_channels[cmd[1]]->setTime();
+		std::string	topic;
+		size_t	begin = 1;
+
+		for (std::deque<std::string>::iterator it = cmd.begin() + 2; it != cmd.end(); ++it){
+			++begin;
+			if ((*it)[0] == ':')
+				break ;
 		}
-		else{
-			_channels[cmd[1]]->setTopic("");
-		}
+		topic = catParam(cmd, begin);
+		if (topic[0] == ':')
+			topic.erase(topic.begin());
+		sendChannel(-1, cmd[1], ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " TOPIC " + cmd[1] + " :" + topic + "\r\n");
+		_channels[cmd[1]]->setTopic(topic);
+		_channels[cmd[1]]->setTime();
 	}
 	else
 		mysend(fd, ":" + _name + " 482 " + _clients[fd]->getNickName() + " " + cmd[1] + " :You're not channel operator\r\n");
