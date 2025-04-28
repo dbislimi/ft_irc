@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/23 16:00:48 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/28 18:59:26 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ class Channel {
 		bool				_isLimitUser;
 		bool				_isTopicRestrict;
 		std::string			_modes;
-				bool				_channelOnInvited;
+		bool				_channelOnInvited;
 		bool				_channelWithPass;
 		bool				_channelUserRestrict;
 

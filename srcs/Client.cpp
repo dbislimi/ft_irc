@@ -163,3 +163,14 @@ bool Client::getStartedPing() const{
 void Client::setStartedPing(bool startPing){
     this->_startToPing = startPing;
 }
+
+void Client::deleteFromInvite(std::string channel){
+    for (std::map<std::string, bool>::iterator it = this->_invited.begin(); it != this->_invited.end(); ++it){
+        std::cout << "SERVEUR NAME == " << it->first << std::endl;
+    }
+    std::cout << " OKKK " << std::endl;
+    _invited.erase(channel);
+    for (std::map<std::string, bool>::iterator it = this->_invited.begin(); it != this->_invited.end(); ++it){
+        std::cout << "SERVEUR NAME == " << it->first << std::endl;
+    }
+}

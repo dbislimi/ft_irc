@@ -1,6 +1,10 @@
 #include "../includes/all.hpp"
 
 void	Server::INVITE(int fd, std::deque<std::string> cmd){
+	if (cmd[2] == _name){
+		mysend(fd, ":serveur 442 " + _clients[fd]->getNickName() + " :You're not on a channel\r\n");
+		return ;
+	}
 	if (!_channels[cmd[2]]->isOp(fd)){
 		mysend(fd, ":serveur 482 " + _clients[fd]->getNickName() + " " + cmd[1] + " :Permission Denied- You're not an IRC operator\r\n");
 		return ;
@@ -11,6 +15,10 @@ void	Server::INVITE(int fd, std::deque<std::string> cmd){
 	}
 	if (!checkClient(cmd[1])){
 		mysend(fd, cmd[1] + " :No such nick\r\n");
+		return ;
+	}
+	if (_clients[fd]->getNickName() == cmd[1]){
+		mysend(fd, ":serveur 443 " + _clients[fd]->getNickName() + " " + cmd[2] + " :is already on channel");
 		return ;
 	}
 	if (!checkChannel(cmd[2])){

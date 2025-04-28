@@ -36,7 +36,7 @@ void Server::createChannel(int op, std::string value)
 	channel->setIsmdp(false);
 	channel->setTopicRestrict(false);
 	channel->setisLimitUser(false);
-	_clients[op]->insertInvited(value, false);   //remplacer channel* par string mais tjrs la meme segfault
+	_clients[op]->insertInvited(value, false);
 }
 
 void Server::JOIN(int fd, std::deque<std::string> cmd)

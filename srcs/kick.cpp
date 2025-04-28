@@ -54,6 +54,8 @@ void	Server::deleteFromChannel(int fd, std::string channel, std::deque<std::stri
 	_channels[channel]->removeOp(fd_leaving);
 	_nbCliChannel[channel].erase(_clients[fd_leaving]->getNickName());
 	if (_nbCliChannel[channel].size() == 0){
+		std::cout << "JE SUIS RENTRER DANS LE IF" << std::endl;
+		_clients[fd]->deleteFromInvite(channel);
 		_nbCliChannel.erase(channel);
 		delete _channels[channel];
 		_channels.erase(channel);

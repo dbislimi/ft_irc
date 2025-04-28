@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/23 16:01:37 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/28 19:53:09 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ class Client {
 		bool _nick;
 		bool _isInvited;
 		int _fd;
-		std::map<std::string, bool> _invitedOn;
 		std::string		_ip;
 		// struct in_addr	addr;
 		std::string _userName;
@@ -83,4 +82,5 @@ class Client {
     	void setLastPing(time_t lastPing);
 		time_t getLastPong();
     	void setLastPong(time_t lastPong);
+		void deleteFromInvite(std::string channel);
 };
