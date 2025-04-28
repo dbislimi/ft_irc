@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/23 16:03:43 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/28 16:22:13 by dravaono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,6 +147,8 @@ void Server::newCmd(int fd)
     time_t currentTime = time(NULL);
 	
 	_clients[fd]->setLastAction(currentTime);
+	_clients[fd]->setLastPing(currentTime);
+	_clients[fd]->setLastPong(currentTime);
 	memset(buff, 0, sizeof(buff));
 	size_t bytes = recv(fd, buff, sizeof(buff) - 1, 0);
 	if (bytes <= 0){
