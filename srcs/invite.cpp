@@ -17,7 +17,7 @@ void	Server::INVITE(int fd, std::deque<std::string> cmd){
 		mysend(fd, ":serveur 401 " + _clients[fd]->getNickName() + " " + cmd[1] + " :No such nick\r\n");
 		return ;
 	}
-	if (_clients[fd]->getNickName() == cmd[1]){ // condition pas bonne faut check tous les clients dans le channel
+	if (findUser(cmd[2], cmd[1]) == true){
 		mysend(fd, ":serveur 443 " + _clients[fd]->getNickName() + " "  + cmd[1] + " " + cmd[2] + " :is already on channel");
 		return ;
 	}
