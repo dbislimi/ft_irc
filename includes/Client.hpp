@@ -6,7 +6,7 @@
 /*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/28 19:53:09 by bsafi            ###   ########.fr       */
+/*   Updated: 2025/04/29 18:35:47 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ class Client {
 		time_t 		_lastPong;
 		bool _startToPing;
 		
-		std::map<std::string, bool> _invited;
 
 	public:
 		Client(Server* server): _isConnected(false), _isRegistered(false), _nick(false), _server(server), _startToPing(false){}

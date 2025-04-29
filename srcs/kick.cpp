@@ -52,10 +52,11 @@ void	Server::deleteFromChannel(int fd, std::string channel, std::deque<std::stri
 	}
 	sendChannel(-1, channel, msg);	
 	_channels[channel]->removeOp(fd_leaving);
+	std::cout << "LE NOM EN QUESTION " << _clients[fd_leaving]->getNickName() << std::endl;
+	_channels[channel]->removeFromLstI(_clients[fd_leaving]->getNickName());
 	_nbCliChannel[channel].erase(_clients[fd_leaving]->getNickName());
 	if (_nbCliChannel[channel].size() == 0){
-		std::cout << "JE SUIS RENTRER DANS LE IF" << std::endl;
-		_clients[fd]->deleteFromInvite(channel);
+		//_clients[fd]->deleteFromInvite(channel);
 		_nbCliChannel.erase(channel);
 		delete _channels[channel];
 		_channels.erase(channel);

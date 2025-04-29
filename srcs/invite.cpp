@@ -18,11 +18,15 @@ void	Server::INVITE(int fd, std::deque<std::string> cmd){
 		return ;
 	}
 	if (_clients[fd]->getNickName() == cmd[1]){
-		mysend(fd, ":serveur 443 " + _clients[fd]->getNickName() + " " + cmd[2] + " :is already on channel");
+		mysend(fd, ":serveur 443 " + _clients[fd]->getNickName() + " " + cmd[2] + " :is already on channel\r\n");
 		return ;
 	}
 	if (!checkChannel(cmd[2])){
 		mysend(fd, cmd[2] + " :No such channel\r\n");
+		return ;
+	}
+	if (_channels[cmd[2]]->checkLstI(cmd[1]) == true){
+		mysend(fd, cmd[1] + " :is already invitedr\r\n");
 		return ;
 	}
 	std::map<int, Client*>::iterator ot = _clients.begin();
@@ -37,7 +41,8 @@ void	Server::INVITE(int fd, std::deque<std::string> cmd){
 			break;
 		it++;
 	}
-	it->second->setInvited(cmd[2], true);
+	_channels[cmd[2]]->setLstInvit(cmd[1]);
+	//it->second->setInvited(cmd[2], true);
 	
 	mysend(it->second->getFd(), "You have been invited to \00306" + cmd[2] + "\003 by \00302" + ot->second->getNickName() + "\003\r\n");
 	mysend(fd, "You've invited \00302" + it->second->getNickName() + "\003 to \00306" + cmd[2] + "\003\r\n");
