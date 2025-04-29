@@ -6,7 +6,7 @@
 /*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/28 18:59:26 by bsafi            ###   ########.fr       */
+/*   Updated: 2025/04/29 18:48:13 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,20 +19,21 @@
 
 class Channel {
 	private:
-		std::string			_name;
-		std::string			_topic;
-		std::time_t			_timestamp;
-		std::deque<int>		_ops;
-		bool				_invitRestrict;
-		bool				_ismdp;
-		std::string			_mdp;
-		long				_limitUser;
-		bool				_isLimitUser;
-		bool				_isTopicRestrict;
-		std::string			_modes;
-		bool				_channelOnInvited;
-		bool				_channelWithPass;
-		bool				_channelUserRestrict;
+		std::string					_name;
+		std::string					_topic;
+		std::time_t					_timestamp;
+		std::deque<int>				_ops;
+		bool						_invitRestrict;
+		bool						_ismdp;
+		std::string					_mdp;
+		long						_limitUser;
+		bool						_isLimitUser;
+		bool						_isTopicRestrict;
+		std::string					_modes;
+		bool						_channelOnInvited;
+		bool						_channelWithPass;
+		bool						_channelUserRestrict;
+		std::vector<std::string>	_lstInvit;
 
 	public:
 		Channel(int op, const std::string& name): _name(name){_ops.push_back(op), _channelOnInvited = false;}
@@ -66,4 +67,7 @@ class Channel {
 		void		updateModes(std::deque<std::string> cmd);
 		std::string	getModes();
 		std::string getName();
+		void		setLstInvit(std::string val);
+		void		removeFromLstI(std::string nash);
+		bool		checkLstI(std::string name);
 };

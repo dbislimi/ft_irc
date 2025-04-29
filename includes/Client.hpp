@@ -6,7 +6,7 @@
 /*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/28 19:53:09 by bsafi            ###   ########.fr       */
+/*   Updated: 2025/04/29 18:48:56 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,6 @@ class Client {
 		time_t 		_lastPing;
 		time_t 		_lastPong;
 		bool _startToPing;
-		
-		std::map<std::string, bool> _invited;
 
 	public:
 		Client(Server* server): _isConnected(false), _isRegistered(false), _nick(false), _server(server), _startToPing(false){}
@@ -73,14 +71,10 @@ class Client {
 		std::string	getCat() const;
 		std::string cat(std::string buff);
 		void		clearCat();
-		void		setInvited(std::string, bool value);
-		bool		getInvited(Channel c);
-		void		insertInvited(std::string, bool val);
 		time_t getLastAction();
 		void   setLastAction(time_t lastAct);
 		time_t getLastPing();
     	void setLastPing(time_t lastPing);
 		time_t getLastPong();
     	void setLastPong(time_t lastPong);
-		void deleteFromInvite(std::string channel);
 };

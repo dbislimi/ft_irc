@@ -131,3 +131,25 @@ bool Channel::getChannelOnInvited(){
 std::string Channel::getName(){
 	return _name;
 }
+
+void		Channel::setLstInvit(std::string val){
+	_lstInvit.push_back(val);
+}
+
+void		Channel::removeFromLstI(std::string nash){
+	for(std::vector<std::string>::iterator it = _lstInvit.begin(); it != _lstInvit.end(); ++it){
+		if (*it == nash){
+			_lstInvit.erase(it);
+			return ;
+		}
+	}
+}
+
+bool		Channel::checkLstI(std::string nm){
+	for (std::vector<std::string>::iterator it = _lstInvit.begin(); it != _lstInvit.end(); ++it){
+		if (*it == nm){
+			return true;
+		}
+	}
+	return false;
+}

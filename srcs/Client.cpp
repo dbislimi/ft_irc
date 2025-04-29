@@ -82,23 +82,6 @@ void Client::setBoolNick(){
     _nick = true;
 }
 
-void Client::setInvited(std::string nm, bool value){
-    _invited[nm] = value;
-}
-
-void Client::insertInvited(std::string nm, bool val){
-    _invited[nm] = val;
-}
-
-bool Client::getInvited(Channel c){
-    for(std::map<std::string, bool>::iterator it = _invited.begin(); it != _invited.end(); ++it){
-        if (it->first == c.getName()){
-            return it->second;
-        }
-    }
-    return false;
-}
-
 // void Client::setInvited(std::string nm, bool value){
 //     _invited[nm] = value;
 // }
@@ -162,15 +145,4 @@ bool Client::getStartedPing() const{
 
 void Client::setStartedPing(bool startPing){
     this->_startToPing = startPing;
-}
-
-void Client::deleteFromInvite(std::string channel){
-    for (std::map<std::string, bool>::iterator it = this->_invited.begin(); it != this->_invited.end(); ++it){
-        std::cout << "SERVEUR NAME == " << it->first << std::endl;
-    }
-    std::cout << " OKKK " << std::endl;
-    _invited.erase(channel);
-    for (std::map<std::string, bool>::iterator it = this->_invited.begin(); it != this->_invited.end(); ++it){
-        std::cout << "SERVEUR NAME == " << it->first << std::endl;
-    }
 }

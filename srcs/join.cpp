@@ -36,7 +36,6 @@ void Server::createChannel(int op, std::string value)
 	channel->setIsmdp(false);
 	channel->setTopicRestrict(false);
 	channel->setisLimitUser(false);
-	_clients[op]->insertInvited(value, false);
 }
 
 void Server::JOIN(int fd, std::deque<std::string> cmd)
@@ -73,7 +72,7 @@ void Server::JOIN(int fd, std::deque<std::string> cmd)
 				mysend(fd, ":server 471 " + _clients[fd]->getNickName() +  " " + *(channels.begin() + i) + " :Cannot join channel (+l)\r\n");
 				continue ;
 			}
-			if (_channels[*(channels.begin() + i)]->getInvitRestrict() == true && _clients[fd]->getInvited(*_channels[*(channels.begin() + i)]) == false){
+			if (_channels[*(channels.begin() + i)]->getInvitRestrict() == true && _channels[*(channels.begin() + i)]->checkLstI(_clients[fd]->getNickName()) == false){
 				mysend(fd, ":" + _name + " 473 " + _clients[fd]->getNickName() + " " + cmd[1] + " :Cannot join channel (+i)\r\n");
 				continue;
 			}
