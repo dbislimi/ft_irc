@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/28 16:22:13 by dravaono         ###   ########.fr       */
+/*   Updated: 2025/04/30 15:31:14 by bsafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,6 +208,7 @@ void Server::eraseClient(int fd)
 			std::map<std::string, int>::iterator temp2 = it2;
 			++it2;
 			if (temp2->second == fd){
+				_channels[temp1->first]->removeFromLstI(temp2->first);
 				(it->second).erase(temp2);
 			}
 		}
