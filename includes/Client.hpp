@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/29 18:48:56 by bsafi            ###   ########.fr       */
+/*   Updated: 2025/04/30 15:14:48 by dravaono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ class Client {
 		time_t 		_lastPing;
 		time_t 		_lastPong;
 		bool _startToPing;
+		time_t _timeConnect;
+		
 
 	public:
 		Client(Server* server): _isConnected(false), _isRegistered(false), _nick(false), _server(server), _startToPing(false){}
@@ -77,4 +79,6 @@ class Client {
     	void setLastPing(time_t lastPing);
 		time_t getLastPong();
     	void setLastPong(time_t lastPong);
+		time_t getTimeConnect();
+    	void setTimeConnect(time_t timeConnect);
 };

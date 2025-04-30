@@ -146,3 +146,11 @@ bool Client::getStartedPing() const{
 void Client::setStartedPing(bool startPing){
     this->_startToPing = startPing;
 }
+
+void Client::setTimeConnect(time_t timeConnect){
+    this->_timeConnect = timeConnect;
+}
+
+time_t Client::getTimeConnect(){
+    return _timeConnect;
+}
