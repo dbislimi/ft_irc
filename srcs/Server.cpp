@@ -6,7 +6,7 @@
 /*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/21 19:58:00 by dravaono         ###   ########.fr       */
+/*   Updated: 2025/04/30 15:17:37 by dravaono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,19 @@ static const int PING_TIMEOUT = 8;
 static const int PING_WAITNEXT = 15;
 
 bool Server::signal = false;
+
+Server::~Server()
+{
+	for (size_t i = 0; i < _fds.size(); ++i)
+	{
+		std::cout << "closing fd: " << _fds[i].fd << std::endl;
+		close(_fds[i].fd);
+	}
+	for (std::map<int, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
+		delete it->second;
+	_clients.clear();
+	_fds.clear();
+}
 
 void Server::signals(int signum)
 {
@@ -141,6 +154,8 @@ void Server::newCmd(int fd)
     time_t currentTime = time(NULL);
 	
 	_clients[fd]->setLastAction(currentTime);
+	_clients[fd]->setLastPing(currentTime);
+	_clients[fd]->setLastPong(currentTime);
 	memset(buff, 0, sizeof(buff));
 	size_t bytes = recv(fd, buff, sizeof(buff) - 1, 0);
 	if (bytes <= 0){
@@ -161,33 +176,27 @@ void Server::newCmd(int fd)
 		std::cout << "Data: [" << *it << "] from " << fd << std::endl;
 		if (_clients[fd]->getNickName().empty() && !strncmp((*it).c_str(), "CAP", 3))
 			continue ;
-		handleCmd(buff, split((*it), " \t\r\n"), fd);
+		handleCmd(split((*it), " \t\r\n"), fd);
 	}
 }
 
-Server::~Server()
+void Server::handleCmd(std::deque<std::string> cmd, int fd)
 {
-	for (size_t i = 0; i < _fds.size(); ++i)
-	{
-		std::cout << "closing fd: " << _fds[i].fd << std::endl;
-		close(_fds[i].fd);
-	}
-	for (std::map<int, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
-		delete it->second;
-	_clients.clear();
-	_fds.clear();
-}
+	std::map<std::string, void (Server::*)(int, std::deque<std::string>)>::iterator it = _cmds.find(cmd[0]);
+	std::string	ignore_for_now[3] = {"CAP", "WHO", "PRIVMSG"};
 
-void Server::printmap()
-{
-	std::cout << std::endl
-			  << "Map: " << std::endl;
-	for (std::map<int, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
-	{
-
-		std::cout << "[" << it->first << "] = " << it->second->getIp() << std::endl;
+	if (it != _cmds.end()){
+		if (it->first == "PASS")
+			PASS(fd, cmd);
+		else if (it->first == "QUIT" || _clients[fd]->isConnected()){
+			(this->*(it->second))(fd, cmd);
+		}
+		return ;
 	}
-	std::cout << std::endl;
+	for (int i = 0; i < 3; ++i)
+		if (cmd[0] == ignore_for_now[i])
+			return ;
+	mysend(fd, ":server 421 " + _clients[fd]->getNickName() +  " " + cmd[0] + " :Unknown command\r\n");
 }
 
 void Server::eraseClient(int fd)
@@ -200,36 +209,28 @@ void Server::eraseClient(int fd)
 			break;
 		}
 	}
+	for (std::map<std::string, std::map<std::string, int> >::iterator it = _nbCliChannel.begin(); it != _nbCliChannel.end();){
+		std::map<std::string, std::map<std::string, int> >::iterator temp1 = it;
+		for (std::map<std::string, int>::iterator it2 = (it->second).begin(); it2 != (it->second).end();){
+			std::map<std::string, int>::iterator temp2 = it2;
+			++it2;
+			if (temp2->second == fd){
+				(it->second).erase(temp2);
+			}
+		}
+		++it;
+		if ((temp1->second).empty()){
+			delete _channels[temp1->first];
+			_channels.erase(temp1->first);
+			_nbCliChannel.erase(temp1);
+		}
+	}
 	std::map<int, Client *>::iterator it = _clients.find(fd);
 	if (it == _clients.end())
 		return;
 	delete it->second;
 	_clients.erase(it);
 	close(fd);
-}
-
-void Server::handleCmd(std::string buff, std::deque<std::string> cmd, int fd)
-{
-	(void)buff;
-	std::string	suggest = (_clients[fd]->isConnected()) ? "/join ." : "/PASS [..] .";
-	std::string	unvalid = cmd[0] + " :Unknown command, please use " + suggest + "\r\n";
-	std::map<std::string, void (Server::*)(int, std::deque<std::string>)>::iterator it = _cmds.find(cmd[0]);
-	std::string	ignore_for_now[3] = {"CAP", "WHO", "PRIVMSG"};
-
-	if (it != _cmds.end()){
-		if (it->first == "PASS")
-			PASS(fd, cmd);
-		else if (it->first == "QUIT"
-			|| _clients[fd]->isConnected())
-			(this->*(it->second))(fd, cmd);
-		else
-			mysend(fd, "Not logged in. use PASS <password>\r\n");
-		return ;
-	}
-	for (int i = 0; i < 3; ++i)
-		if (cmd[0] == ignore_for_now[i])
-			return ;
-	send(fd, unvalid.c_str(), unvalid.length(), 0);
 }
 
 void	Server::USER(int fd, std::deque<std::string> cmd){
@@ -325,4 +326,24 @@ bool Server::findUser(std::string channel_name, std::string nick){
 	if (it == _nbCliChannel[channel_name].end())
 		return (false);
 	return (true);
+}
+
+void Server::printmap()
+{
+	std::cout << std::endl
+			  << "Clients: " << std::endl;
+	for (std::map<int, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
+	{
+
+		std::cout << "[" << it->first << "] = " << it->second->getIp() << std::endl;
+	}
+	std::cout << std::endl;
+}
+
+int	Server::findFd(std::string nick){
+	for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); ++it){
+		if (it->second->getNickName() == nick)
+			return (it->first);
+	}
+	return (0);
 }

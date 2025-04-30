@@ -6,9 +6,10 @@
 /*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/21 18:35:58 by dravaono         ###   ########.fr       */
+/*   Updated: 2025/04/30 15:14:48 by dravaono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #pragma once
 
@@ -24,13 +25,11 @@ class Client {
 		bool _nick;
 		bool _isInvited;
 		int _fd;
-		std::map<std::string, bool> _invitedOn;
 		std::string		_ip;
-		struct in_addr	addr;
+		// struct in_addr	addr;
 		std::string _userName;
 		std::string _nickName;
-		std::string	_prevNick;
-		std::string	_channel;
+		std::string	_tempNick;
 		Server*		_server;
 		std::string	_to_cat;
 		time_t 		_lastAction;
@@ -43,22 +42,28 @@ class Client {
 	public:
 		Client(Server* server): _isConnected(false), _isRegistered(false), _nick(false), _server(server), _startToPing(false){}
 		~Client(){std::cout << "Client <" << _fd << "> disconnected." << std::endl;}
+		bool getSign();
+		bool getBoolName();
+		bool getBoolNick();
+		void setBoolNick();
+		void setSign(bool isSigned);
+		void setBoolName(bool allName);
+		void	connect();
 		bool getRegister();
 		bool getIsInvited();
 		void setIsInvited(bool isInvited);
 		void setRegister();
 		bool	isConnected() const;
-		void	connect();
 		bool	getStartedPing() const;
 		void	setStartedPing(bool startPing);
 		void setFd(int fd);
 		int	getFd() const;
 		std::string	getUserName() const;
 		std::string	getNickName() const;
-		std::string getPrevNick() const;
+		std::string getTempNick() const;
 		void setUserName(std::string userName);
 		void setNickName(std::string nickName);
-		void updatePrevNick();
+		void setTempNick(std::string nick);
 		void setIpAdd(struct in_addr addr);
 		const std::string&	getIp() const;
 		void welcomeMsg();

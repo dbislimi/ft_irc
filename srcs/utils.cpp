@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 14:22:35 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/04/08 18:18:36 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/21 18:24:45 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ std::deque<std::string>	split(std::string str, std::string sep){
 		if (first == std::string::npos)
 			break ;
 		last = str.find_first_of(sep, first);
+		if (last == std::string::npos)
+			last = str.length();
 		deque.push_back(str.substr(first, last - first));
 	}
 	return (deque);
@@ -46,4 +48,23 @@ std::string	catParam(std::deque<std::string> cmd, int start){
 				param += cmd[i];
 	}
 	return (param);
+}
+
+std::string longToString(long value){
+    std::ostringstream oss;
+    oss << value;
+    return (oss.str());
+}
+
+bool	isnumber(std::string s){
+	int i = -1;
+	while (s[++i]){
+		if (!(std::isdigit(s[i])))
+			return false;
+	}
+	return true;
+}
+
+bool	isSpecialChar(char c){
+	return (strchr("[]\\`_^{|}", c) != NULL);
 }

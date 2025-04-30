@@ -8,76 +8,75 @@ bool Server::checkChannel(std::string value)
 	return true;
 }
 
-void Server::joinChannel(std::string value, int fd)
+void Server::joinChannel(std::string channel, int fd)
 {
-	if (_clients[fd]->getNickName().empty() || _clients[fd]->getUserName().empty()){
-		mysend(fd, "You need to register first. Use NICK <nickname> then USER <username>.\r\n");
-		return ;
-	}
-	_nbCliChannel[value].insert(std::pair<std::string, int>(_clients[fd]->getNickName(), fd));
-	std::string msg = ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " JOIN " + value + "\r\n";
-	send(fd, msg.c_str(), msg.length(), 0);
-	msg = ":" + _name + " 353 " + _clients[fd]->getNickName() + " = " + value + " :";
-	for (std::map<std::string, int>::iterator it = _nbCliChannel[value].begin(); it != _nbCliChannel[value].end(); ++it)
+	std::string msg;
+
+	_nbCliChannel[channel].insert(std::pair<std::string, int>(_clients[fd]->getNickName(), fd));
+	sendChannel(-1, channel, ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " JOIN " + channel + "\r\n");
+	if (!_channels[channel]->getTopic().empty())
+		mysend(fd, ":server 332 " + _clients[fd]->getNickName() +  " " + channel + _channels[channel]->getTopic() +"\r\n");
+	msg = ":" + _name + " 353 " + _clients[fd]->getNickName() + " = " + channel + " :";
+	for (std::map<std::string, int>::iterator it = _nbCliChannel[channel].begin(); it != _nbCliChannel[channel].end(); ++it)
 	{
-        if (_channels[value]->isOp(it->second)) {
-            msg += "@" + _clients[it->second]->getNickName() + " ";
-        } else {
-            msg += _clients[it->second]->getNickName() + " ";
-        }
+		if (_channels[channel]->isOp(it->second))
+			msg += "@" + _clients[it->second]->getNickName() + " ";
+		else 
+			msg += _clients[it->second]->getNickName() + " ";
 	}
-	msg += "\r\n";
-    send(fd, msg.c_str(), msg.length(), 0);
-    msg = ":" + _name +  " 366 " + _clients[fd]->getNickName() + " " + value + " :End of /NAMES list.\r\n";
-    send(fd, msg.c_str(), msg.length(), 0);
-    msg = ":" + _name +  " 324 " + _clients[fd]->getNickName() + " " + value + " :+nt\r\n";
-    send(fd, msg.c_str(), msg.length(), 0);
-    msg = ":" + _name +  " 329 " + _clients[fd]->getNickName() + " " + value + " :1743783418\r\n"; 
-    send(fd, msg.c_str(), msg.length(), 0);
-    msg = ":" + _name +  " 354 " + _clients[fd]->getNickName() + " 152 " + value + " " + _clients[fd]->getNickName() + " " + _clients[fd]->getIp() + "\r\n";
-    send(fd, msg.c_str(), msg.length(), 0);
-	for (std::map<std::string, int>::iterator it = _nbCliChannel[value].begin(); it != _nbCliChannel[value].end(); ++it)
-	{
-		if (it->second != fd)
-		{
-			msg = ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " JOIN " + value + "\r\n";
-			send(it->second, msg.c_str(), msg.length(), 0);
-		}
-	}
+	mysend(fd, msg + "\r\n");
+	mysend(fd, ":server 366 " + _clients[fd]->getNickName() +  " " + channel + " :End of /NAMES list\r\n");
 }
 
 void Server::createChannel(int op, std::string value)
 {
 	Channel *channel = new Channel(op, value);
 	_channels.insert(std::pair<std::string, Channel *>(value, channel));
-	
+	channel->setInvitRestrict(false);
+	channel->setIsmdp(false);
+	channel->setTopicRestrict(false);
+	channel->setisLimitUser(false);
 }
 
 void Server::JOIN(int fd, std::deque<std::string> cmd)
 {
-	if (cmd.size() == 1){
-		mysend(fd, "Usage: JOIN <channel>, joins the channel\r\n");
+	std::deque<std::string>	channels;
+	std::deque<std::string>	keys;
+
+	if (_clients[fd]->getNickName().empty()){
+		mysend(fd, ":server 451 * :You have not registered\r\n");
 		return ;
 	}
-	std::string msg = "Please add # after /join\r\n";
-	if (cmd[1][0] != '#')
-		send(fd, msg.c_str(), msg.length(), 0);
-	else
-	{
-		if (!checkChannel(cmd[1]))
-			createChannel(fd, cmd[1]);
-	// 	if (channelIsInviteOnly(cmd[1])){
-	// 		mysend(fd, ":serveur 473 :Cannot join channel(+i)\r\n");
-	// 		return;
-	// 	}
-	// 	if (!channelWithPassword(cmd[1])){
-	// 		mysend(fd, ":serveur 475 :Cannot join channel(incorrect channel key)\r\n");
-	// 		return;
-	// 	}
-	// 	if (!channelWithUserRestrict(cmd[1])){
-	// 		mysend(fd, "serveur 471 :Cannot join channel :Channel is full\r\n");
-	// 		return;
-	// 	}
-		joinChannel(cmd[1], fd);
+	if (_clients[fd]->getUserName().empty()){
+		mysend(fd, ":server 451 " + _clients[fd]->getNickName() +  " :You have not registered\r\n");
+		return ;
+	}
+	if (cmd.size() == 1){
+		mysend(fd, ":server 461 " + _clients[fd]->getNickName() +  " " + cmd[0] + " :Not enough parameters\r\n");
+		return ;
+	}
+	channels = split(cmd[1], ",");
+	if (cmd.size() > 2)
+		keys = split(cmd[2], ",");
+	for (size_t	i = 0; i < channels.size(); ++i){
+		if ((*(channels.begin() + i))[0] != '#')
+			mysend(fd, ":server 403 " + _clients[fd]->getNickName() +  " " + *(channels.begin() + i) + " :No such channel\r\n");
+		else{
+			if (!checkChannel(*(channels.begin() + i)))
+				createChannel(fd, *(channels.begin() + i));
+			if (_channels[*(channels.begin() + i)]->getIsmdp() == true && (cmd.size() <= 2 || i >= keys.size() || *(keys.begin() + i) != _channels[*(channels.begin() + i)]->getMdp())){
+				mysend(fd, ":server 475 " + _clients[fd]->getNickName() +  " " + *(channels.begin() + i) + " :Cannot join channel (+k)\r\n");
+				continue ;
+			}
+			if (_channels[*(channels.begin() + i)]->getisLimitUser() == true && _nbCliChannel[*(channels.begin() + i)].size() >= static_cast<size_t>(_channels[*(channels.begin() + i)]->getLimitUser())){
+				mysend(fd, ":server 471 " + _clients[fd]->getNickName() +  " " + *(channels.begin() + i) + " :Cannot join channel (+l)\r\n");
+				continue ;
+			}
+			if (_channels[*(channels.begin() + i)]->getInvitRestrict() == true && _channels[*(channels.begin() + i)]->checkLstI(_clients[fd]->getNickName()) == false){
+				mysend(fd, ":" + _name + " 473 " + _clients[fd]->getNickName() + " " + cmd[1] + " :Cannot join channel (+i)\r\n");
+				continue;
+			}
+			joinChannel(*(channels.begin() + i), fd);
+		}
 	}
 }

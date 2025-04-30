@@ -3,6 +3,7 @@
 # include <algorithm>
 # include <exception>
 # include <cstring>
+# include <sstream>
 # include <cstdlib>
 # include <unistd.h>
 # include <cstdio>
@@ -13,11 +14,13 @@
 # include <netinet/in.h>
 # include <netdb.h>
 # include <vector>
+# include <ctime>
 
 # include <csignal>
 # include <map>
 # include <set>
 # include <deque>
+# define INT_MAX 2147483647
 # define BACKLOG 10 // nombre max de demandes de connexion
 
 #define BLD std::string("\002")  // Bold (Gras)

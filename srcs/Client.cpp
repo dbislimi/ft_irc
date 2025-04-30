@@ -31,7 +31,6 @@ bool	Client::isConnected() const{
 
 
 void Client::setNickName(std::string nickName){
-    updatePrevNick();
     this->_nickName = nickName;
 }
 
@@ -47,15 +46,16 @@ std::string Client::getUserName() const{
     return (_userName);
 }
 
-std::string Client::getPrevNick() const{
-    return (_prevNick);
+std::string Client::getTempNick() const{
+    return (_tempNick);
 }
 
-void	Client::setChannel(std::string& name){
-    this->_channel = name;
+void Client::setBoolName(bool allName){
+    this->_allName = allName;
 }
-std::string	Client::getChannel() const{
-    return (_channel);
+
+bool Client::getBoolName(){
+    return (_allName);
 }
 
 std::string    Client::getCat() const{
@@ -70,9 +70,34 @@ void	Client::clearCat(){
 	_to_cat.clear();
 }
 
-void    Client::updatePrevNick(){
-    this->_prevNick = this->_nickName;
+void    Client::setTempNick(std::string nick){
+    this->_tempNick = nick;
 }
+
+bool Client::getBoolNick(){
+    return (this->_nick);
+}
+
+void Client::setBoolNick(){
+    _nick = true;
+}
+
+// void Client::setInvited(std::string nm, bool value){
+//     _invited[nm] = value;
+// }
+
+// void Client::insertInvited(std::string nm, bool val){
+//     _invited[nm] = val;
+// }
+
+// bool Client::getInvited(Channel c){
+//     for(std::map<std::string, bool>::iterator it = _invited.begin(); it != _invited.end(); ++it){
+//         if (it->first == c.getName()){
+//             return it->second;
+//         }
+//     }
+//     return false;
+// }
 
 bool Client::getRegister(){
     return (this->_isRegistered);
