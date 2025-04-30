@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/30 15:14:48 by dravaono         ###   ########.fr       */
+/*   Updated: 2025/04/30 16:19:14 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,9 @@ class Client {
 	private:
 		bool	_isConnected;
 		bool	_isRegistered;
-		bool _isSigned;
-		bool _allName;
-		bool _isOps;
-		bool _nick;
 		bool _isInvited;
 		int _fd;
 		std::string		_ip;
-		// struct in_addr	addr;
 		std::string _userName;
 		std::string _nickName;
 		std::string	_tempNick;
@@ -37,17 +32,10 @@ class Client {
 		time_t 		_lastPong;
 		bool _startToPing;
 		time_t _timeConnect;
-		
 
 	public:
-		Client(Server* server): _isConnected(false), _isRegistered(false), _nick(false), _server(server), _startToPing(false){}
+		Client(Server* server): _isConnected(false), _isRegistered(false), _server(server), _startToPing(false){}
 		~Client(){std::cout << "Client <" << _fd << "> disconnected." << std::endl;}
-		bool getSign();
-		bool getBoolName();
-		bool getBoolNick();
-		void setBoolNick();
-		void setSign(bool isSigned);
-		void setBoolName(bool allName);
 		void	connect();
 		bool getRegister();
 		bool getIsInvited();
@@ -66,10 +54,6 @@ class Client {
 		void setTempNick(std::string nick);
 		void setIpAdd(struct in_addr addr);
 		const std::string&	getIp() const;
-		void welcomeMsg();
-		void	setChannel(std::string& name);
-		void statusInvit(std::string channel);
-		std::string	getChannel() const;
 		std::string	getCat() const;
 		std::string cat(std::string buff);
 		void		clearCat();

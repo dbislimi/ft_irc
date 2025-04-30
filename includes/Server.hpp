@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/21 16:14:59 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/30 16:46:25 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ class Server {
 		void	_init_socket();
 		
 	public: 
+		static const int PING_TIMEOUT;
+		static const int PING_WAITNEXT;
 		Server(const std::string& name, int port, std::string password) : _name(name), _port(port), _passWord(password){
 			_cmds["JOIN"] = &Server::JOIN;
 			_cmds["PART"] = &Server::PART;
@@ -53,13 +55,10 @@ class Server {
 		void	init();
 		void 	newClient();
 		void	pingClient();
-		void	pongClient(int fd, std::string msg);
 		void	newCmd(int fd);
 		void	printmap();
 		void	eraseClient(int fd);
-		void 	checkPassword(int fd);
 		void	handleCmd(std::deque<std::string> cmd, int fd);
-		void	get_info(int fd, std::deque<std::string> cmd);
 		void	intro(int clientfd);
 		ssize_t	mysend(int fd, std::string msg);
 
@@ -82,7 +81,6 @@ class Server {
 		void	PRIVMSG(int fd, std::deque<std::string> cmd);
 		void	NAMES(int fd, std::deque<std::string> cmd);
 
-		
 		void deleteFromChannel(int fd, std::string channel, std::deque<std::string> cmd, std::string reason);
 		void createChannel(int op, std::string value);
 		void joinChannel(std::string value, int fd);
@@ -90,11 +88,6 @@ class Server {
 		bool checkClient(std::string value);
 		void sendChannel(int fd, std::string channel_name, std::string msg);
 		bool findUser(std::string channel_name, std::string nick);
-
-
-		bool channelIsInviteOnly(std::string value);
-		bool channelWithPassword(std::string value);
-		bool channelWithUserRestrict(std::string value);
 		int	findFd(std::string nick);
 		bool isCorrectNick(std::string nick);
 };

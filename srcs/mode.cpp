@@ -8,24 +8,24 @@ void Server::MODE(int fd, std::deque<std::string> cmd)
 	std::map<std::string, Channel *>::iterator it;
 	
 	if (_clients[fd]->getNickName().empty()){
-		mysend(fd, ":server 451 * :You have not registered\r\n");
+		mysend(fd, ":" + _name + " 451 * :You have not registered\r\n");
 		return ;
 	}
 	if (_clients[fd]->getUserName().empty()){
-		mysend(fd, ":server 451 " + _clients[fd]->getNickName() +  " :You have not registered\r\n");
+		mysend(fd, ":" + _name + " 451 " + _clients[fd]->getNickName() +  " :You have not registered\r\n");
 		return ;
 	}
 	if (cmd.size() == 1){
-		mysend(fd, ":server 461 " + _clients[fd]->getNickName() +  " " + cmd[0] + " :Not enough parameters\r\n");
+		mysend(fd, ":" + _name + " 461 " + _clients[fd]->getNickName() +  " " + cmd[0] + " :Not enough parameters\r\n");
 		return ;
 	}
 	it = _channels.find(cmd[1]);
 	if (it == _channels.end()){
-		mysend(fd, ":serveur 403 " + _clients[fd]->getNickName() + " " + cmd[1] + " :No such channel\r\n");
+		mysend(fd, ":" + _name + " 403 " + _clients[fd]->getNickName() + " " + cmd[1] + " :No such channel\r\n");
 		return ;
 	}
 	if (cmd.size() == 2){
-		mysend(fd, ":server 324 " + _clients[fd]->getNickName() +  " " + cmd[1] + " :+" + _channels[cmd[1]]->getModes() + "\r\n");
+		mysend(fd, ":" + _name + " 324 " + _clients[fd]->getNickName() +  " " + cmd[1] + " :+" + _channels[cmd[1]]->getModes() + "\r\n");
 		return ;	
 	}
 	if (_channels[cmd[1]]->isOp(fd) == false){
@@ -41,7 +41,7 @@ void Server::MODE(int fd, std::deque<std::string> cmd)
 			return;
 		}
 	}
-	mysend(fd, ":server 472 " + _clients[fd]->getNickName() +  " " + cmd[1][1] + " :is unknown mode char to me\r\n");
+	mysend(fd, ":" + _name + " 472 " + _clients[fd]->getNickName() +  " " + cmd[1][1] + " :is unknown mode char to me\r\n");
 }
 
 bool Server::MODEi(int fd, std::deque<std::string> cmd, Channel* channel)
@@ -117,7 +117,7 @@ bool Server::MODEk(int fd, std::deque<std::string> cmd, Channel* channel)
 bool Server::MODEo(int fd, std::deque<std::string> cmd, Channel* channel)
 {
 	if (cmd.size() < 4){
-		mysend(fd, ":server 461 " + _clients[fd]->getNickName() +  " " + cmd[0] + " :Not enough parameters\r\n");
+		mysend(fd, ":" + _name + " 461 " + _clients[fd]->getNickName() +  " " + cmd[0] + " :Not enough parameters\r\n");
 		return (0);
 	}
 	std::map<std::string, int>::iterator target = _nbCliChannel[cmd[1]].find(cmd[3]);
@@ -152,7 +152,7 @@ bool Server::MODEl(int fd, std::deque<std::string> cmd, Channel* channel)
 
 	if (cmd[2] == "+l"){
 		if (cmd.size() < 4){
-			mysend(fd, ":server 461 " + _clients[fd]->getNickName() +  " " + cmd[0] + " :Not enough parameters\r\n");
+			mysend(fd, ":" + _name + " 461 " + _clients[fd]->getNickName() +  " " + cmd[0] + " :Not enough parameters\r\n");
 			return (0);
 		}
 		if (isnumber(cmd[3]) == false)

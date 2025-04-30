@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/29 18:48:13 by bsafi            ###   ########.fr       */
+/*   Updated: 2025/04/30 16:15:52 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,6 @@ class Channel {
 		bool						_isTopicRestrict;
 		std::string					_modes;
 		bool						_channelOnInvited;
-		bool						_channelWithPass;
-		bool						_channelUserRestrict;
 		std::vector<std::string>	_lstInvit;
 
 	public:
@@ -41,10 +39,6 @@ class Channel {
 		bool	isOp(int fd);
 		void	setChannelOnInvited(bool channelOnInvited);
 		bool	getChannelOnInvited();
-		void	setChannelWithPass(bool channelWithPass);
-		bool	getChannelWithPass();
-		void	setChannelUserRestrict(bool channelUserRestrict);
-		bool	getChannelUserRestrict();
 		void	removeOp(int fd);
 		void	addOp(int fd);
 

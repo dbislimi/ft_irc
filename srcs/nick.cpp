@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 16:00:53 by dbislimi          #+#    #+#             */
-/*   Updated: 2025/04/18 17:15:34 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/30 16:22:19 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 
 void	Server::USER(int fd, std::deque<std::string> cmd){
 	if (!_clients[fd]->getUserName().empty()){
-		mysend(fd, ":server 462 " + _clients[fd]->getNickName() + " :You may not reregister\r\n");
+		mysend(fd, ":" + _name + " 462 " + _clients[fd]->getNickName() + " :You may not reregister\r\n");
 		return ;
 	}
 	if (cmd.size() < 5){
-		mysend(fd, ":server 461 " + _clients[fd]->getNickName() +  " " + cmd[0] + " :Not enough parameters\r\n");
+		mysend(fd, ":" + _name + " 461 " + _clients[fd]->getNickName() +  " " + cmd[0] + " :Not enough parameters\r\n");
 		return ;
 	}
 	_clients[fd]->setUserName(cmd[1]);
@@ -27,23 +27,23 @@ void	Server::USER(int fd, std::deque<std::string> cmd){
 void	Server::NICK(int fd, std::deque<std::string> cmd){
 	if (cmd.size() == 1){
 		if (!_clients[fd]->getNickName().empty())
-			mysend(fd, ":server 431 " + _clients[fd]->getNickName() + " :No nickname given\r\n");
+			mysend(fd, ":" + _name + " 431 " + _clients[fd]->getNickName() + " :No nickname given\r\n");
 		else
-			mysend(fd, ":server 431 * :No nickname given\r\n");
+			mysend(fd, ":" + _name + " 431 * :No nickname given\r\n");
 		return ;
 	}
 	if (_clients[fd]->getTempNick().empty())
 		_clients[fd]->setTempNick(cmd[1]);
 	if (!isCorrectNick(cmd[1])){
 		if (!_clients[fd]->getNickName().empty())
-			mysend(fd, ":server 432 " + _clients[fd]->getNickName() + " :Erroneus nickname\r\n");
+			mysend(fd, ":" + _name + " 432 " + _clients[fd]->getNickName() + " :Erroneus nickname\r\n");
 		else
-			mysend(fd, ":server 432 * :Erroneus nickname\r\n");
+			mysend(fd, ":" + _name + " 432 * :Erroneus nickname\r\n");
 		return ;
 	}
 	for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end();){
 		if (it->first != fd && it->second->getNickName() == cmd[1]){
-			mysend(fd, ":server 433 " + cmd[1] + " :Nickname is already in use\r\n");
+			mysend(fd, ":" + _name + " 433 " + cmd[1] + " :Nickname is already in use\r\n");
 			return ;
 		}
 		++it;

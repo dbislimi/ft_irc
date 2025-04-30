@@ -4,7 +4,7 @@ void Server::NAMES(int fd, std::deque<std::string> cmd){
 	std::string msg;
 	std::deque<std::string> channels;
 	if (cmd.size() < 1){
-		mysend(fd, ":server 461 " + _clients[fd]->getNickName() +  " " + cmd[0] + " :Not enough parameters\r\n");
+		mysend(fd, ":" + _name + " 461 " + _clients[fd]->getNickName() +  " " + cmd[0] + " :Not enough parameters\r\n");
 		return ;
 	}
 	channels = split(cmd[1], ",");
@@ -19,5 +19,5 @@ void Server::NAMES(int fd, std::deque<std::string> cmd){
 		}
 	}
 	mysend(fd, msg + "\r\n");
-	mysend(fd, ":server 366 " + _clients[fd]->getNickName() +  " " + cmd[1] + " :End of /NAMES list\r\n");
+	mysend(fd, ":" + _name + " 366 " + _clients[fd]->getNickName() +  " " + cmd[1] + " :End of /NAMES list\r\n");
 }

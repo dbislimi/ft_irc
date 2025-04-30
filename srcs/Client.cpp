@@ -50,14 +50,6 @@ std::string Client::getTempNick() const{
     return (_tempNick);
 }
 
-void Client::setBoolName(bool allName){
-    this->_allName = allName;
-}
-
-bool Client::getBoolName(){
-    return (_allName);
-}
-
 std::string    Client::getCat() const{
     return (_to_cat);
 }
@@ -73,31 +65,6 @@ void	Client::clearCat(){
 void    Client::setTempNick(std::string nick){
     this->_tempNick = nick;
 }
-
-bool Client::getBoolNick(){
-    return (this->_nick);
-}
-
-void Client::setBoolNick(){
-    _nick = true;
-}
-
-// void Client::setInvited(std::string nm, bool value){
-//     _invited[nm] = value;
-// }
-
-// void Client::insertInvited(std::string nm, bool val){
-//     _invited[nm] = val;
-// }
-
-// bool Client::getInvited(Channel c){
-//     for(std::map<std::string, bool>::iterator it = _invited.begin(); it != _invited.end(); ++it){
-//         if (it->first == c.getName()){
-//             return it->second;
-//         }
-//     }
-//     return false;
-// }
 
 bool Client::getRegister(){
     return (this->_isRegistered);

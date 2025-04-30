@@ -3,18 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/30 15:56:50 by dravaono         ###   ########.fr       */
+/*   Updated: 2025/04/30 16:56:38 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/all.hpp"
 
-static const int PING_TIMEOUT = 8;
-static const int PING_WAITNEXT = 15;
-
+const int Server::PING_WAITNEXT = 25;
+const int Server::PING_TIMEOUT = 15;
 bool Server::signal = false;
 
 Server::~Server()
@@ -28,12 +27,20 @@ Server::~Server()
 		delete it->second;
 	_clients.clear();
 	_fds.clear();
+	if (!_channels.empty()){
+		for (std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end();){
+			std::map<std::string, Channel*>::iterator temp = it;
+			++it;
+			delete temp->second;
+			_channels.erase(temp);
+		}
+	}
+	_channels.clear();
 }
 
 void Server::signals(int signum)
 {
 	(void)signum;
-	std::cout << "signal received " << std::endl;
 	Server::signal = true;
 }
 
@@ -195,7 +202,7 @@ void Server::handleCmd(std::deque<std::string> cmd, int fd)
 	for (int i = 0; i < 2; ++i)
 		if (cmd[0] == ignore[i])
 			return ;
-	mysend(fd, ":server 421 " + _clients[fd]->getNickName() +  " " + cmd[0] + " :Unknown command\r\n");
+	mysend(fd, ":" + _name + " 421 " + _clients[fd]->getNickName() +  " " + cmd[0] + " :Unknown command\r\n");
 }
 
 void Server::eraseClient(int fd)
