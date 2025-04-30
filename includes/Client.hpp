@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bsafi <bsafi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/29 18:48:56 by bsafi            ###   ########.fr       */
+/*   Updated: 2025/04/30 15:43:17 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ class Client {
 		bool _isInvited;
 		int _fd;
 		std::string		_ip;
-		// struct in_addr	addr;
 		std::string _userName;
 		std::string _nickName;
 		std::string	_tempNick;
@@ -44,7 +43,6 @@ class Client {
 		bool getBoolName();
 		bool getBoolNick();
 		void setBoolNick();
-		void setSign(bool isSigned);
 		void setBoolName(bool allName);
 		void	connect();
 		bool getRegister();
@@ -64,10 +62,6 @@ class Client {
 		void setTempNick(std::string nick);
 		void setIpAdd(struct in_addr addr);
 		const std::string&	getIp() const;
-		void welcomeMsg();
-		void	setChannel(std::string& name);
-		void statusInvit(std::string channel);
-		std::string	getChannel() const;
 		std::string	getCat() const;
 		std::string cat(std::string buff);
 		void		clearCat();

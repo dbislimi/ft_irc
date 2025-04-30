@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/21 16:14:59 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/30 15:43:33 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,7 @@ class Server {
 		void	newCmd(int fd);
 		void	printmap();
 		void	eraseClient(int fd);
-		void 	checkPassword(int fd);
 		void	handleCmd(std::deque<std::string> cmd, int fd);
-		void	get_info(int fd, std::deque<std::string> cmd);
 		void	intro(int clientfd);
 		ssize_t	mysend(int fd, std::string msg);
 
@@ -90,11 +88,6 @@ class Server {
 		bool checkClient(std::string value);
 		void sendChannel(int fd, std::string channel_name, std::string msg);
 		bool findUser(std::string channel_name, std::string nick);
-
-
-		bool channelIsInviteOnly(std::string value);
-		bool channelWithPassword(std::string value);
-		bool channelWithUserRestrict(std::string value);
 		int	findFd(std::string nick);
 		bool isCorrectNick(std::string nick);
 };
