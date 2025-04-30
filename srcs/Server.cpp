@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/28 16:22:13 by dravaono         ###   ########.fr       */
+/*   Updated: 2025/04/30 15:35:13 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,7 +176,7 @@ void Server::newCmd(int fd)
 void Server::handleCmd(std::deque<std::string> cmd, int fd)
 {
 	std::map<std::string, void (Server::*)(int, std::deque<std::string>)>::iterator it = _cmds.find(cmd[0]);
-	std::string	ignore_for_now[3] = {"CAP", "WHO", "PRIVMSG"};
+	std::string	ignore[2] = {"CAP", "WHO"};
 
 	if (it != _cmds.end()){
 		if (it->first == "PASS")
@@ -186,8 +186,8 @@ void Server::handleCmd(std::deque<std::string> cmd, int fd)
 		}
 		return ;
 	}
-	for (int i = 0; i < 3; ++i)
-		if (cmd[0] == ignore_for_now[i])
+	for (int i = 0; i < 2; ++i)
+		if (cmd[0] == ignore[i])
 			return ;
 	mysend(fd, ":server 421 " + _clients[fd]->getNickName() +  " " + cmd[0] + " :Unknown command\r\n");
 }
