@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/30 15:38:56 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/30 15:56:50 by dravaono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,37 +85,43 @@ void Server::init() {
 }
 
 void Server::pingClient() {
-	time_t currentTime = time(NULL);
-	for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); ) {
-		if (it->second->isConnected() && (currentTime - it->second->getLastAction() > PING_TIMEOUT)) {
-			if (currentTime - it->second->getLastPing() > PING_TIMEOUT) {
-				std::string pingMsg = "PING :" + this->_name + "\r\n";
-				send(it->second->getFd(), pingMsg.c_str(), pingMsg.size(), 0);
-				it->second->setLastPing(currentTime);
-			}
-		}
+    time_t currentTime = time(NULL);
 
-		if (currentTime - it->second->getLastPong() > PING_WAITNEXT) {
-			if (!it->second->getStartedPing()) {
-				++it;
-				continue;
-			}
-			int fd = it->second->getFd();
-			++it;
-			eraseClient(fd);
-		} else {
-			++it;
-		}
-	}
+    for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); ) {
+        if (it->second->isConnected() && (currentTime - it->second->getLastAction() > PING_TIMEOUT)) {
+            if (it->second->getLastPong() == 0) {
+                it->second->setLastPong(currentTime);
+            }
+            if (!it->second->getStartedPing()) {
+                if (currentTime - it->second->getLastPing() > PING_TIMEOUT) {
+                    std::string pingMsg = "PING :" + this->_name + "\r\n";
+                    send(it->second->getFd(), pingMsg.c_str(), pingMsg.size(), 0);
+                    it->second->setLastPing(currentTime);
+                    it->second->setStartedPing(true);
+                }
+            }
+        }
+        if (it->second->getStartedPing() && currentTime - it->second->getLastPong() <= PING_WAITNEXT) {
+            it->second->setStartedPing(false);
+        }
+        if (it->second->getStartedPing() && currentTime - it->second->getLastPong() > PING_WAITNEXT) {
+			std::string discMsg = "You have been disconnected from the server\r\n";
+			send(it->second->getFd(), discMsg.c_str(), discMsg.size(), 0);
+            int fd = it->second->getFd();
+            ++it;
+            eraseClient(fd);
+            continue;
+        }
+        ++it;
+    }
 }
-
 
 void Server::PONG(int fd, std::deque<std::string> cmd) {
 	(void)cmd;
     time_t timer = time(NULL);
     _clients[fd]->setLastAction(timer);
 	_clients[fd]->setLastPong(timer);
-	_clients[fd]->setStartedPing(true);
+	_clients[fd]->setStartedPing(false);
 }
 
 void Server::newClient(){
@@ -226,7 +232,6 @@ void Server::eraseClient(int fd)
 	_clients.erase(it);
 	close(fd);
 }
-
 
 void	Server::QUIT(int fd, std::deque<std::string> cmd){
 	(void)cmd;

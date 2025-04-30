@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/30 15:43:17 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/04/30 15:58:02 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ class Client {
 		time_t 		_lastPing;
 		time_t 		_lastPong;
 		bool _startToPing;
+		time_t _timeConnect;
+		
 
 	public:
 		Client(Server* server): _isConnected(false), _isRegistered(false), _nick(false), _server(server), _startToPing(false){}
@@ -71,4 +73,6 @@ class Client {
     	void setLastPing(time_t lastPing);
 		time_t getLastPong();
     	void setLastPong(time_t lastPong);
+		time_t getTimeConnect();
+    	void setTimeConnect(time_t timeConnect);
 };

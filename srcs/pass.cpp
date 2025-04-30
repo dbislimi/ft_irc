@@ -11,6 +11,7 @@ void	Server::PASS(int fd, std::deque<std::string> cmd){
 	}
 	if (cmd[1] == this->_passWord){
 		_clients[fd]->connect();
+		_clients[fd]->setTimeConnect(time(NULL));
 		return ;
 	}
 }
