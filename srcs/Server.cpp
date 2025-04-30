@@ -6,7 +6,7 @@
 /*   By: dravaono <dravaono@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/30 15:17:37 by dravaono         ###   ########.fr       */
+/*   Updated: 2025/04/30 15:56:11 by dravaono         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,8 @@ void Server::pingClient() {
             it->second->setStartedPing(false);
         }
         if (it->second->getStartedPing() && currentTime - it->second->getLastPong() > PING_WAITNEXT) {
+			std::string discMsg = "You have been disconnected from the server\r\n";
+			send(it->second->getFd(), discMsg.c_str(), discMsg.size(), 0);
             int fd = it->second->getFd();
             ++it;
             eraseClient(fd);
@@ -113,9 +115,6 @@ void Server::pingClient() {
         ++it;
     }
 }
-
-
-
 
 void Server::PONG(int fd, std::deque<std::string> cmd) {
 	(void)cmd;
@@ -231,47 +230,6 @@ void Server::eraseClient(int fd)
 	delete it->second;
 	_clients.erase(it);
 	close(fd);
-}
-
-void	Server::USER(int fd, std::deque<std::string> cmd){
-	if (_clients[fd]->getRegister() == true){
-		mysend(fd, "You may not reregister\r\n");
-		return ;
-	}
-	_clients[fd]->setUserName(cmd[1]);
-}
-
-void	Server::NICK(int fd, std::deque<std::string> cmd){
-	if (cmd.size() == 1){
-		mysend(fd, "Usage: NICK <nickname>, sets your nick\r\n");
-		return ;
-	}
-	if (_clients[fd]->getNickName().empty())
-		_clients[fd]->setNickName(cmd[1]);
-	for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end();){
-		if (it->first != fd && it->second->getNickName() == cmd[1]){
-			mysend(fd, ":server 433 " + cmd[1] + " :Nickname already taken\r\n");
-			return ;
-		}
-		++it;
-	}
-	if (!_clients[fd]->getUserName().empty())
-		mysend(fd, ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " NICK :" + cmd[1] + "\r\n");
-	_clients[fd]->setNickName(cmd[1]);
-
-}
-
-void	Server::PASS(int fd, std::deque<std::string> cmd){
-	if (cmd.size() == 1){
-		mysend(fd, "Usage: /PASS <password>, logs you in\r\n");
-		return ;
-	}
-	if (cmd[1] == this->_passWord){
-		_clients[fd]->connect();
-		_clients[fd]->setTimeConnect(time(NULL));
-		return ;
-	}
-	mysend(fd, "Wrong password ...\r\nPlease try again.\r\n");
 }
 
 void	Server::QUIT(int fd, std::deque<std::string> cmd){
