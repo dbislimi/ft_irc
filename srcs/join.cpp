@@ -36,6 +36,7 @@ void Server::createChannel(int op, std::string value)
 	channel->setIsmdp(false);
 	channel->setTopicRestrict(false);
 	channel->setisLimitUser(false);
+	channel->setLimitUser(INT_MAX);
 }
 
 void Server::JOIN(int fd, std::deque<std::string> cmd)

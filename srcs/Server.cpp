@@ -6,7 +6,7 @@
 /*   By: dbislimi <dbislimi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/04/30 16:56:38 by dbislimi         ###   ########.fr       */
+/*   Updated: 2025/05/02 16:04:33 by dbislimi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,21 +215,18 @@ void Server::eraseClient(int fd)
 			break;
 		}
 	}
+	std::deque<std::string>	cmd(1);
+	cmd[0] = "PART";
 	for (std::map<std::string, std::map<std::string, int> >::iterator it = _nbCliChannel.begin(); it != _nbCliChannel.end();){
 		std::map<std::string, std::map<std::string, int> >::iterator temp1 = it;
-		for (std::map<std::string, int>::iterator it2 = (it->second).begin(); it2 != (it->second).end();){
+		++it;
+		for (std::map<std::string, int>::iterator it2 = (temp1->second).begin(); it2 != (temp1->second).end();){
 			std::map<std::string, int>::iterator temp2 = it2;
 			++it2;
 			if (temp2->second == fd){
 				_channels[temp1->first]->removeFromLstI(temp2->first);
-				(it->second).erase(temp2);
+				deleteFromChannel(fd, temp1->first, cmd, ":Leaving");
 			}
-		}
-		++it;
-		if ((temp1->second).empty()){
-			delete _channels[temp1->first];
-			_channels.erase(temp1->first);
-			_nbCliChannel.erase(temp1);
 		}
 	}
 	std::map<int, Client *>::iterator it = _clients.find(fd);

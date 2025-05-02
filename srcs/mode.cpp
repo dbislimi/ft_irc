@@ -108,7 +108,7 @@ bool Server::MODEk(int fd, std::deque<std::string> cmd, Channel* channel)
 	else if (cmd[2] == "-k"){
 		channel->setMdp("");
 		channel->setIsmdp(false);
-		msg =  ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " MODE " + cmd[1] + " " + cmd[2] + " " + cmd[3] + "\r\n";
+		msg =  ":" + _clients[fd]->getNickName() + "!" + _clients[fd]->getUserName() + "@" + _clients[fd]->getIp() + " MODE " + cmd[1] + " " + cmd[2] + "\r\n";
 		sendChannel(-1, cmd[1], msg);
 	}
 	return (1);
