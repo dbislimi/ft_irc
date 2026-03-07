@@ -36,6 +36,6 @@ C++98 means no smart pointers, no lambdas, no auto. Resource management is manua
 ## Structure
 
 ```
-includes/     - Server, Client, Channel class headers
-srcs/         - server loop, command handlers, parsing, utils
+├── includes/     - Server, Client, Channel class headers
+└── srcs/         - server loop, command handlers, parsing, utils
 ```
